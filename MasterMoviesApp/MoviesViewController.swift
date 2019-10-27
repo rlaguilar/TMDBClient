@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 public class MoviesViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
@@ -240,17 +241,7 @@ private class HeroMovieCell: UICollectionViewCell {
                 tagsContainer.addArrangedSubview(tagView)
             }
             
-            if let backdropURL = movie?.backdropURL {
-                URLSession.shared.dataTask(with: backdropURL) { data, _, _ in
-                    if let data = data, let image = UIImage(data: data) {
-                        DispatchQueue.main.async {
-                            if self.movie?.backdropURL == backdropURL {
-                                self.imageView.image = image
-                            }
-                        }
-                    }
-                }.resume()
-            }
+            imageView.kf.setImage(with: movie?.backdropURL ?? movie?.posterURL)
         }
     }
     
@@ -307,12 +298,6 @@ private class HeroMovieCell: UICollectionViewCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        imageView.image = nil
-        movie = nil
     }
     
     private func tagView(forTag tag: String) -> UIView {
@@ -405,19 +390,7 @@ private class MovieCell: UICollectionViewCell {
         didSet {
             titleLabel.attributedText = formatted(title: movie?.title ?? "")
             reviewsLabel.attributedText = formatted(reviews: "⭐️⭐️⭐️⭐️⭐️ 295 Reviews")
-            
-            if let posterURL = movie?.posterURL {
-                URLSession.shared.dataTask(with: posterURL) { data, _, _ in
-                    if let data = data, let image = UIImage(data: data) {
-                        DispatchQueue.main.async {
-                            if self.movie?.posterURL == posterURL {
-                                self.imageView.image = image
-                            }
-                        }
-                    }
-                }.resume()
-            }
-            
+            imageView.kf.setImage(with: movie?.posterURL)
             setNeedsLayout()
             layoutIfNeeded()
         }
@@ -443,12 +416,6 @@ private class MovieCell: UICollectionViewCell {
         titleLabel.frame = CGRect(origin: CGPoint(x: 0, y: imageView.frame.maxY + 12), size: CGSize(width: min(size.width, bounds.width), height: size.height))
         reviewsLabel.sizeToFit()
         reviewsLabel.frame = CGRect(x: 0, y: titleLabel.frame.maxY + 6, width: reviewsLabel.bounds.width, height: reviewsLabel.bounds.height)
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        movie = nil
-        imageView.image = nil
     }
     
     @available(*, unavailable)
