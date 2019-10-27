@@ -26,8 +26,9 @@ public class MoviesViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        collectionView.backgroundColor = UIColor(r: 29, g: 28, b: 39)
-        collectionView.indicatorStyle = .white
+        view.backgroundColor = ColorTheme.shared.backgroundColor
+        collectionView.backgroundColor = .clear
+        collectionView.indicatorStyle = ColorTheme.shared.scrollIndicatorStyle
         view.addSubview(collectionView)
         dataSource.collectionView = collectionView
         collectionView.contentInsetAdjustmentBehavior = .never
@@ -71,12 +72,6 @@ public class MoviesViewController: UIViewController {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension UIColor {
-    convenience init(r: Int, g: Int, b: Int, a: Int = 255) {
-        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
     }
 }
 

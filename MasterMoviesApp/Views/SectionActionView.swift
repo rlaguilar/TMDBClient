@@ -35,7 +35,7 @@ class SectionActionView: UICollectionReusableView {
         return NSAttributedString(
             string: action,
             attributes: [
-                .foregroundColor: UIColor(r: 202, g: 203, b: 216),
+                .foregroundColor: ColorTheme.shared.secondaryTextColor,
                 .font: UIFont.boldSystemFont(ofSize: 10),
                 .kern: 1
             ]

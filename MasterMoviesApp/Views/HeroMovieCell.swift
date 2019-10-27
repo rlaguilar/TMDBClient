@@ -50,7 +50,7 @@ class HeroMovieCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         
         contentView.addSubview(gradientView)
-        let gradientColor = UIColor(r: 29, g: 28, b: 39)
+        let gradientColor = ColorTheme.shared.backgroundColor
         gradientView.colors = [gradientColor.withAlphaComponent(0), gradientColor]
         contentView.addSubview(titleLabel)
         titleLabel.numberOfLines = 0
@@ -104,7 +104,7 @@ class HeroMovieCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = .clear
         view.layer.borderWidth = 0.5
-        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.layer.borderColor = ColorTheme.shared.borderColor.cgColor
         view.layer.cornerRadius = 4
         view.addSubview(label)
         
@@ -129,7 +129,7 @@ class HeroMovieCell: UICollectionViewCell {
         return NSAttributedString(
             string: title,
             attributes: [
-                .foregroundColor: UIColor(r: 202, g: 203, b: 216),
+                .foregroundColor: ColorTheme.shared.secondaryTextColor,
                 .font: UIFont.systemFont(ofSize: 30),
                 .kern: 0
             ]
@@ -143,7 +143,7 @@ class HeroMovieCell: UICollectionViewCell {
         return NSAttributedString(
             string: reviews,
             attributes: [
-                .foregroundColor: UIColor(r: 202, g: 203, b: 216),
+                .foregroundColor: ColorTheme.shared.secondaryTextColor,
                 .font: UIFont.systemFont(ofSize: 14),
                 .kern: 1
             ]
@@ -157,7 +157,7 @@ class HeroMovieCell: UICollectionViewCell {
         return NSAttributedString(
             string: tag,
             attributes: [
-                .foregroundColor: UIColor(r: 202, g: 203, b: 216),
+                .foregroundColor: ColorTheme.shared.secondaryTextColor,
                 .font: UIFont.systemFont(ofSize: 9),
                 .kern: 1
             ]

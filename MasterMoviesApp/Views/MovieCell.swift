@@ -57,7 +57,7 @@ class MovieCell: UICollectionViewCell {
         return NSAttributedString(
             string: title,
             attributes: [
-                .foregroundColor: UIColor.white,
+                .foregroundColor: ColorTheme.shared.primaryTextColor,
                 .font: UIFont.systemFont(ofSize: 16),
                 .kern: 1.2
             ]
@@ -71,7 +71,7 @@ class MovieCell: UICollectionViewCell {
         return NSAttributedString(
             string: reviews,
             attributes: [
-                .foregroundColor: UIColor(r: 202, g: 203, b: 216),
+                .foregroundColor: ColorTheme.shared.secondaryTextColor,
                 .font: UIFont.systemFont(ofSize: 10),
                 .kern: 1
             ]

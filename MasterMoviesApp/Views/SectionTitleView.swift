@@ -39,7 +39,7 @@ class SectionTitleView: UICollectionReusableView {
         return NSAttributedString(
             string: title,
             attributes: [
-                .foregroundColor: UIColor.white,
+                .foregroundColor: ColorTheme.shared.primaryTextColor,
                 .font: UIFont.systemFont(ofSize: 20),
                 .kern: 1
             ]
