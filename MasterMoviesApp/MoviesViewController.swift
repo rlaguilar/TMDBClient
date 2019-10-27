@@ -8,26 +8,42 @@
 
 import UIKit
 
-class MoviesViewController: UIViewController {
-    lazy var collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+public class MoviesViewController: UIViewController {
+    private lazy var collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
     private let dataSource = MoviesDataSource()
+    private let moviesDiscoverer: MoviesDiscoverer
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
-    override func viewDidLoad() {
+    public init(moviesDiscoverer: MoviesDiscoverer) {
+        self.moviesDiscoverer = moviesDiscoverer
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         collectionView.backgroundColor = UIColor(r: 29, g: 28, b: 39)
         collectionView.indicatorStyle = .white
         view.addSubview(collectionView)
         dataSource.collectionView = collectionView
-        dataSource.featuredContents = FeaturedContent.testData
         collectionView.contentInsetAdjustmentBehavior = .never
+        
+        moviesDiscoverer.discoverMovies(forDate: Date()) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let content):
+                    self.dataSource.featuredContents = content
+                case .failure(let error):
+                    print("Unable to discover movies with error: \(error)")
+                }
+            }
+        }
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         collectionView.frame = view.bounds
@@ -49,6 +65,11 @@ class MoviesViewController: UIViewController {
         }
         
         return layout
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -192,11 +213,13 @@ private class SectionActionView: UICollectionReusableView {
 
 /*
  TODO:
- - Use image view
  - Add gradient
  - Add play button
 */
 private class HeroMovieCell: UICollectionViewCell {
+    private let imageView = UIImageView()
+    private let gradientView = GradientView()
+    
     private let tagsContainer = UIStackView()
     private let reviewsLabel = UILabel()
     private let titleLabel = UILabel()
@@ -216,12 +239,31 @@ private class HeroMovieCell: UICollectionViewCell {
             ["THRILLER", "ACTION"].map { tagView(forTag: $0) }.forEach { tagView in
                 tagsContainer.addArrangedSubview(tagView)
             }
+            
+            if let backdropURL = movie?.backdropURL {
+                URLSession.shared.dataTask(with: backdropURL) { data, _, _ in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            if self.movie?.backdropURL == backdropURL {
+                                self.imageView.image = image
+                            }
+                        }
+                    }
+                }.resume()
+            }
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor(r: 19, g: 18, b: 29)
+        
+        contentView.addSubview(imageView)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        contentView.addSubview(gradientView)
+        let gradientColor = UIColor(r: 29, g: 28, b: 39)
+        gradientView.colors = [gradientColor.withAlphaComponent(0), gradientColor]
         contentView.addSubview(titleLabel)
         titleLabel.numberOfLines = 0
         
@@ -230,11 +272,23 @@ private class HeroMovieCell: UICollectionViewCell {
         tagsContainer.axis = .horizontal
         tagsContainer.spacing = 8
         
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        gradientView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         reviewsLabel.translatesAutoresizingMaskIntoConstraints = false
         tagsContainer.translatesAutoresizingMaskIntoConstraints = false
         
         let constraints = [
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            gradientView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            gradientView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            gradientView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            gradientView.topAnchor.constraint(equalTo: titleLabel.topAnchor),
+            
             tagsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             tagsContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             tagsContainer.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16),
@@ -253,6 +307,12 @@ private class HeroMovieCell: UICollectionViewCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.image = nil
+        movie = nil
     }
     
     private func tagView(forTag tag: String) -> UIView {
@@ -321,6 +381,19 @@ private class HeroMovieCell: UICollectionViewCell {
             ]
         )
     }
+    
+    private class GradientView: UIView {
+        override class var layerClass: AnyClass {
+            return CAGradientLayer.self
+        }
+        
+        var colors: [UIColor] = [] {
+            didSet {
+                let gradientLayer = layer as! CAGradientLayer
+                gradientLayer.colors = colors.map { $0.cgColor }
+            }
+        }
+    }
 }
 
 private class MovieCell: UICollectionViewCell {
@@ -332,6 +405,19 @@ private class MovieCell: UICollectionViewCell {
         didSet {
             titleLabel.attributedText = formatted(title: movie?.title ?? "")
             reviewsLabel.attributedText = formatted(reviews: "⭐️⭐️⭐️⭐️⭐️ 295 Reviews")
+            
+            if let posterURL = movie?.posterURL {
+                URLSession.shared.dataTask(with: posterURL) { data, _, _ in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            if self.movie?.posterURL == posterURL {
+                                self.imageView.image = image
+                            }
+                        }
+                    }
+                }.resume()
+            }
+            
             setNeedsLayout()
             layoutIfNeeded()
         }
@@ -341,10 +427,12 @@ private class MovieCell: UICollectionViewCell {
         super.init(frame: frame)
         addSubview(imageView)
         imageView.backgroundColor = .lightGray
+        imageView.contentMode = .scaleAspectFill
         addSubview(titleLabel)
         addSubview(reviewsLabel)
         
         imageView.layer.cornerRadius = 8
+        imageView.clipsToBounds = true
     }
     
     override func layoutSubviews() {
@@ -355,6 +443,12 @@ private class MovieCell: UICollectionViewCell {
         titleLabel.frame = CGRect(origin: CGPoint(x: 0, y: imageView.frame.maxY + 12), size: CGSize(width: min(size.width, bounds.width), height: size.height))
         reviewsLabel.sizeToFit()
         reviewsLabel.frame = CGRect(x: 0, y: titleLabel.frame.maxY + 6, width: reviewsLabel.bounds.width, height: reviewsLabel.bounds.height)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        movie = nil
+        imageView.image = nil
     }
     
     @available(*, unavailable)

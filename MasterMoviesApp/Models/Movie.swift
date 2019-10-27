@@ -9,25 +9,33 @@
 import Foundation
 
 public struct Movie: Codable {
+    public let id: Int
     public let title: String
-}
-
-public extension Movie {
-    static let murder = Movie(title: "Murder On The Orient Express")
-    static let starWars = Movie(title: "Rogue One: A Stars War Story")
-    static let terminator = Movie(title: "Terminator: Dark Fate")
-    static let godfather = Movie(title: "The Godfather")
-    static let mile = Movie(title: "The Green Mile")
+    public let voteCount: Int
+    public let voteAverage: Float
+    public let genreIDs: [Int]
+    public let posterPath: String
+    public let backdropPath: String?
     
-    static func generateCategory() -> [Movie] {
-        var movies: [Movie] = [.starWars, .terminator, .godfather, .mile]
-        var randomCategory: [Movie] = []
-        
-        while let movie = movies.randomElement() {
-            randomCategory.append(movie)
-            movies.removeAll(where: { $0.title == movie.title })
+    var posterURL: URL? {
+        // TODO: Retrieve images configurations in the right way
+        return URL(string: "https://image.tmdb.org/t/p/w780/")?.appendingPathComponent(posterPath)
+    }
+    
+    var backdropURL: URL? {
+        guard let backdropPath = backdropPath else {
+            return nil
         }
         
-        return randomCategory
+        return URL(string: "https://image.tmdb.org/t/p/w780/")?.appendingPathComponent(backdropPath)
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case id, title
+        case voteCount = "vote_count"
+        case voteAverage = "vote_average"
+        case genreIDs = "genre_ids"
+        case posterPath = "poster_path"
+        case backdropPath = "backdrop_path"
     }
 }

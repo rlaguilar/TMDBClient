@@ -20,7 +20,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let homeVC = MoviesViewController()
+        let moviesDiscoverer = MoviesDiscoverer(
+            baseURL: URL(string: "https://api.themoviedb.org/3/")!,
+            apiKey: "340528aae953e802b9f330ecb5aedbed"
+        )
+        
+        let homeVC = MoviesViewController(moviesDiscoverer: moviesDiscoverer)
         window.rootViewController = homeVC
         window.makeKeyAndVisible()
         self.window = window

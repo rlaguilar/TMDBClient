@@ -14,8 +14,10 @@
 		F1A6E2222363E0DA00BFB6A7 /* MasterMoviesAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E2212363E0DA00BFB6A7 /* MasterMoviesAppTests.swift */; };
 		F1A6E22D2363E0DA00BFB6A7 /* MasterMoviesAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E22C2363E0DA00BFB6A7 /* MasterMoviesAppUITests.swift */; };
 		F1A6E23C23641CB000BFB6A7 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E23B23641CB000BFB6A7 /* Movie.swift */; };
-		F1A6E23E23641CF700BFB6A7 /* FeatureMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E23D23641CF700BFB6A7 /* FeatureMovies.swift */; };
+		F1A6E23E23641CF700BFB6A7 /* FeatureContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E23D23641CF700BFB6A7 /* FeatureContent.swift */; };
 		F1A6E24023641FA000BFB6A7 /* MoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E23F23641FA000BFB6A7 /* MoviesViewController.swift */; };
+		F1A6E2422365983A00BFB6A7 /* NetworkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E2412365983A00BFB6A7 /* NetworkRequest.swift */; };
+		F1A6E2452365A00700BFB6A7 /* DiscoverRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E2442365A00700BFB6A7 /* DiscoverRequests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,8 +51,10 @@
 		F1A6E22C2363E0DA00BFB6A7 /* MasterMoviesAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterMoviesAppUITests.swift; sourceTree = "<group>"; };
 		F1A6E22E2363E0DA00BFB6A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F1A6E23B23641CB000BFB6A7 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
-		F1A6E23D23641CF700BFB6A7 /* FeatureMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureMovies.swift; sourceTree = "<group>"; };
+		F1A6E23D23641CF700BFB6A7 /* FeatureContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureContent.swift; sourceTree = "<group>"; };
 		F1A6E23F23641FA000BFB6A7 /* MoviesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesViewController.swift; sourceTree = "<group>"; };
+		F1A6E2412365983A00BFB6A7 /* NetworkRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRequest.swift; sourceTree = "<group>"; };
+		F1A6E2442365A00700BFB6A7 /* DiscoverRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverRequests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +105,7 @@
 		F1A6E2092363E0D900BFB6A7 /* MasterMoviesApp */ = {
 			isa = PBXGroup;
 			children = (
+				F1A6E24323659FF100BFB6A7 /* Network Requests */,
 				F1A6E23A23641CA300BFB6A7 /* Models */,
 				F1A6E20A2363E0D900BFB6A7 /* AppDelegate.swift */,
 				F1A6E20C2363E0D900BFB6A7 /* SceneDelegate.swift */,
@@ -134,9 +139,18 @@
 			isa = PBXGroup;
 			children = (
 				F1A6E23B23641CB000BFB6A7 /* Movie.swift */,
-				F1A6E23D23641CF700BFB6A7 /* FeatureMovies.swift */,
+				F1A6E23D23641CF700BFB6A7 /* FeatureContent.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		F1A6E24323659FF100BFB6A7 /* Network Requests */ = {
+			isa = PBXGroup;
+			children = (
+				F1A6E2412365983A00BFB6A7 /* NetworkRequest.swift */,
+				F1A6E2442365A00700BFB6A7 /* DiscoverRequests.swift */,
+			);
+			path = "Network Requests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,9 +284,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1A6E20B2363E0D900BFB6A7 /* AppDelegate.swift in Sources */,
-				F1A6E23E23641CF700BFB6A7 /* FeatureMovies.swift in Sources */,
+				F1A6E23E23641CF700BFB6A7 /* FeatureContent.swift in Sources */,
 				F1A6E23C23641CB000BFB6A7 /* Movie.swift in Sources */,
 				F1A6E20D2363E0D900BFB6A7 /* SceneDelegate.swift in Sources */,
+				F1A6E2452365A00700BFB6A7 /* DiscoverRequests.swift in Sources */,
+				F1A6E2422365983A00BFB6A7 /* NetworkRequest.swift in Sources */,
 				F1A6E24023641FA000BFB6A7 /* MoviesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
