@@ -16,7 +16,7 @@ public struct ColorTheme {
     public let primaryTextColor: UIColor = .white
     public let secondaryTextColor = UIColor(r: 202, g: 203, b: 216)
     public let borderColor: UIColor = .lightGray
-    
+    public let offColor = UIColor(r: 78, g: 75, b: 97)
     public let scrollIndicatorStyle = UIScrollView.IndicatorStyle.white
 }
 

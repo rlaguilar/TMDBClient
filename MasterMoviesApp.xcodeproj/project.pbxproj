@@ -26,6 +26,7 @@
 		F1A6E2542365B7EA00BFB6A7 /* DiscoverMoviesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E2532365B7EA00BFB6A7 /* DiscoverMoviesDataSource.swift */; };
 		F1A6E2572365BC3300BFB6A7 /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E2562365BC3300BFB6A7 /* ColorTheme.swift */; };
 		F1A6E2592365C19500BFB6A7 /* FontTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E2582365C19500BFB6A7 /* FontTheme.swift */; };
+		F1A6E25B2365C57800BFB6A7 /* ReviewCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A6E25A2365C57800BFB6A7 /* ReviewCounterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		F1A6E2532365B7EA00BFB6A7 /* DiscoverMoviesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverMoviesDataSource.swift; sourceTree = "<group>"; };
 		F1A6E2562365BC3300BFB6A7 /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		F1A6E2582365C19500BFB6A7 /* FontTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontTheme.swift; sourceTree = "<group>"; };
+		F1A6E25A2365C57800BFB6A7 /* ReviewCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCounterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 				F1A6E24C2365B74800BFB6A7 /* SectionActionView.swift */,
 				F1A6E24E2365B76300BFB6A7 /* HeroMovieCell.swift */,
 				F1A6E2502365B77200BFB6A7 /* MovieCell.swift */,
+				F1A6E25A2365C57800BFB6A7 /* ReviewCounterView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 				F1A6E2592365C19500BFB6A7 /* FontTheme.swift in Sources */,
 				F1A6E24B2365B73500BFB6A7 /* SectionTitleView.swift in Sources */,
 				F1A6E20D2363E0D900BFB6A7 /* SceneDelegate.swift in Sources */,
+				F1A6E25B2365C57800BFB6A7 /* ReviewCounterView.swift in Sources */,
 				F1A6E2452365A00700BFB6A7 /* DiscoverRequests.swift in Sources */,
 				F1A6E2422365983A00BFB6A7 /* NetworkRequest.swift in Sources */,
 				F1A6E24023641FA000BFB6A7 /* MoviesViewController.swift in Sources */,

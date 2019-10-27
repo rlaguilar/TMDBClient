@@ -10,14 +10,14 @@ import UIKit
 
 class MovieCell: UICollectionViewCell {
     private let titleLabel = UILabel()
-    private let reviewsLabel = UILabel()
+    private let reviewCounterView = ReviewCounterView()
     private let imageView = UIImageView()
     
     var movie: Movie? {
         didSet {
             let fontTheme = FontTheme.shared
             titleLabel.attributedText = fontTheme.subtitle(string: movie?.title ?? "")
-            reviewsLabel.attributedText = fontTheme.small(string: "⭐️⭐️⭐️⭐️⭐️ \(movie?.voteCount ?? 0) Reviews")
+            reviewCounterView.count = ReviewCount(total: movie?.voteCount ?? 0, average: movie?.voteAverage ?? 0)
             imageView.kf.setImage(with: movie?.posterURL)
             setNeedsLayout()
             layoutIfNeeded()
@@ -26,24 +26,32 @@ class MovieCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(imageView)
+        contentView.addSubview(imageView)
         imageView.backgroundColor = .lightGray
         imageView.contentMode = .scaleAspectFill
-        addSubview(titleLabel)
-        addSubview(reviewsLabel)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(reviewCounterView)
         
         imageView.layer.cornerRadius = 8
         imageView.clipsToBounds = true
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
         
-        imageView.frame = CGRect(x: 0, y: 0, width: 232, height: 340)
-        let size = titleLabel.sizeThatFits(CGSize(width: bounds.width, height: .infinity))
-        titleLabel.frame = CGRect(origin: CGPoint(x: 0, y: imageView.frame.maxY + 12), size: CGSize(width: min(size.width, bounds.width), height: size.height))
-        reviewsLabel.sizeToFit()
-        reviewsLabel.frame = CGRect(x: 0, y: titleLabel.frame.maxY + 6, width: reviewsLabel.bounds.width, height: reviewsLabel.bounds.height)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        reviewCounterView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            imageView.heightAnchor.constraint(equalToConstant: 340),
+            
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 12),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor),
+            
+            reviewCounterView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            reviewCounterView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6)
+        ])
     }
     
     @available(*, unavailable)

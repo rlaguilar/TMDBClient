@@ -14,10 +14,13 @@ public struct Movie: Codable {
     public let voteCount: Int
     public let voteAverage: Float
     public let genreIDs: [Int]
-    public let posterPath: String
+    public let posterPath: String?
     public let backdropPath: String?
     
     var posterURL: URL? {
+        guard let posterPath = posterPath else {
+            return nil
+        }
         // TODO: Retrieve images configurations in the right way
         return URL(string: "https://image.tmdb.org/t/p/w780/")?.appendingPathComponent(posterPath)
     }

@@ -19,14 +19,14 @@ class HeroMovieCell: UICollectionViewCell {
     private let gradientView = GradientView()
     
     private let tagsContainer = UIStackView()
-    private let reviewsLabel = UILabel()
+    private let reviewCounterView = ReviewCounterView()
     private let titleLabel = UILabel()
     
     var movie: Movie? {
         didSet {
             let fontTheme = FontTheme.shared
             titleLabel.attributedText = fontTheme.largeTitle(string: movie?.title ?? "")
-            reviewsLabel.attributedText = fontTheme.body(string: "⭐️⭐️⭐️⭐️⭐️ \(movie?.voteCount ?? 0) Reviews")
+            reviewCounterView.count = ReviewCount(total: movie?.voteCount ?? 0, average: movie?.voteAverage ?? 0)
             
             let arrangedSubviews = tagsContainer.arrangedSubviews
             
@@ -56,7 +56,9 @@ class HeroMovieCell: UICollectionViewCell {
         contentView.addSubview(titleLabel)
         titleLabel.numberOfLines = 0
         
-        contentView.addSubview(reviewsLabel)
+        contentView.addSubview(reviewCounterView)
+        reviewCounterView.style = .large
+        
         contentView.addSubview(tagsContainer)
         tagsContainer.axis = .horizontal
         tagsContainer.spacing = 8
@@ -64,7 +66,7 @@ class HeroMovieCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        reviewsLabel.translatesAutoresizingMaskIntoConstraints = false
+        reviewCounterView.translatesAutoresizingMaskIntoConstraints = false
         tagsContainer.translatesAutoresizingMaskIntoConstraints = false
         
         let constraints = [
@@ -82,11 +84,11 @@ class HeroMovieCell: UICollectionViewCell {
             tagsContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             tagsContainer.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16),
             
-            reviewsLabel.bottomAnchor.constraint(equalTo: tagsContainer.topAnchor, constant: -20),
-            reviewsLabel.leadingAnchor.constraint(equalTo: tagsContainer.leadingAnchor),
+            reviewCounterView.bottomAnchor.constraint(equalTo: tagsContainer.topAnchor, constant: -20),
+            reviewCounterView.leadingAnchor.constraint(equalTo: tagsContainer.leadingAnchor),
             
-            titleLabel.bottomAnchor.constraint(equalTo: reviewsLabel.topAnchor, constant: -14),
-            titleLabel.leadingAnchor.constraint(equalTo: reviewsLabel.leadingAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: reviewCounterView.topAnchor, constant: -14),
+            titleLabel.leadingAnchor.constraint(equalTo: reviewCounterView.leadingAnchor),
             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16)
         ]
         
