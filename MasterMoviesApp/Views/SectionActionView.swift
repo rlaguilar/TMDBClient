@@ -14,7 +14,7 @@ class SectionActionView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(button)
-        button.setAttributedTitle(formatted(action: "SEE ALL"), for: .normal)
+        button.setAttributedTitle(FontTheme.shared.small(string: "SEE ALL"), for: .normal)
     }
     
     @available(*, unavailable)
@@ -26,19 +26,5 @@ class SectionActionView: UICollectionReusableView {
         super.layoutSubviews()
         button.sizeToFit()
         button.center = CGPoint(x: bounds.width - button.bounds.width / 2, y: button.bounds.midY)
-    }
-    
-    private func formatted(action: String) -> NSAttributedString {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 28
-        
-        return NSAttributedString(
-            string: action,
-            attributes: [
-                .foregroundColor: ColorTheme.shared.secondaryTextColor,
-                .font: UIFont.boldSystemFont(ofSize: 10),
-                .kern: 1
-            ]
-        )
     }
 }

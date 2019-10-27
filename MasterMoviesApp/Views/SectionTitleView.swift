@@ -13,7 +13,7 @@ class SectionTitleView: UICollectionReusableView {
     
     var title: String? {
         didSet {
-            label.attributedText = formatted(title: title ?? "")
+            label.attributedText = FontTheme.shared.title(string: title ?? "")
         }
     }
     
@@ -30,19 +30,5 @@ class SectionTitleView: UICollectionReusableView {
     override func layoutSubviews() {
         super.layoutSubviews()
         label.frame = bounds
-    }
-    
-    private func formatted(title: String) -> NSAttributedString {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 28
-        
-        return NSAttributedString(
-            string: title,
-            attributes: [
-                .foregroundColor: ColorTheme.shared.primaryTextColor,
-                .font: UIFont.systemFont(ofSize: 20),
-                .kern: 1
-            ]
-        )
     }
 }

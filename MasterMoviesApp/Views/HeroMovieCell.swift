@@ -24,8 +24,9 @@ class HeroMovieCell: UICollectionViewCell {
     
     var movie: Movie? {
         didSet {
-            titleLabel.attributedText = formatted(title: movie?.title ?? "")
-            reviewsLabel.attributedText = formatted(reviews: "⭐️⭐️⭐️⭐️⭐️ 295 Reviews")
+            let fontTheme = FontTheme.shared
+            titleLabel.attributedText = fontTheme.largeTitle(string: movie?.title ?? "")
+            reviewsLabel.attributedText = fontTheme.body(string: "⭐️⭐️⭐️⭐️⭐️ \(movie?.voteCount ?? 0) Reviews")
             
             let arrangedSubviews = tagsContainer.arrangedSubviews
             
@@ -99,7 +100,7 @@ class HeroMovieCell: UICollectionViewCell {
     
     private func tagView(forTag tag: String) -> UIView {
         let label = UILabel()
-        label.attributedText = formatted(tag: tag)
+        label.attributedText = FontTheme.shared.small(string: tag)
         
         let view = UIView()
         view.backgroundColor = .clear
@@ -120,48 +121,6 @@ class HeroMovieCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate(constraints)
         return view
-    }
-    
-    private func formatted(title: String) -> NSAttributedString {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 28
-        
-        return NSAttributedString(
-            string: title,
-            attributes: [
-                .foregroundColor: ColorTheme.shared.secondaryTextColor,
-                .font: UIFont.systemFont(ofSize: 30),
-                .kern: 0
-            ]
-        )
-    }
-    
-    private func formatted(reviews: String) -> NSAttributedString {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 28
-        
-        return NSAttributedString(
-            string: reviews,
-            attributes: [
-                .foregroundColor: ColorTheme.shared.secondaryTextColor,
-                .font: UIFont.systemFont(ofSize: 14),
-                .kern: 1
-            ]
-        )
-    }
-    
-    private func formatted(tag: String) -> NSAttributedString {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 28
-        
-        return NSAttributedString(
-            string: tag,
-            attributes: [
-                .foregroundColor: ColorTheme.shared.secondaryTextColor,
-                .font: UIFont.systemFont(ofSize: 9),
-                .kern: 1
-            ]
-        )
     }
     
     private class GradientView: UIView {

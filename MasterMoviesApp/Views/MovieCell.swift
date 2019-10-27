@@ -15,8 +15,9 @@ class MovieCell: UICollectionViewCell {
     
     var movie: Movie? {
         didSet {
-            titleLabel.attributedText = formatted(title: movie?.title ?? "")
-            reviewsLabel.attributedText = formatted(reviews: "⭐️⭐️⭐️⭐️⭐️ 295 Reviews")
+            let fontTheme = FontTheme.shared
+            titleLabel.attributedText = fontTheme.subtitle(string: movie?.title ?? "")
+            reviewsLabel.attributedText = fontTheme.small(string: "⭐️⭐️⭐️⭐️⭐️ \(movie?.voteCount ?? 0) Reviews")
             imageView.kf.setImage(with: movie?.posterURL)
             setNeedsLayout()
             layoutIfNeeded()
@@ -48,33 +49,5 @@ class MovieCell: UICollectionViewCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func formatted(title: String) -> NSAttributedString {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 28
-        
-        return NSAttributedString(
-            string: title,
-            attributes: [
-                .foregroundColor: ColorTheme.shared.primaryTextColor,
-                .font: UIFont.systemFont(ofSize: 16),
-                .kern: 1.2
-            ]
-        )
-    }
-    
-    private func formatted(reviews: String) -> NSAttributedString {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 28
-        
-        return NSAttributedString(
-            string: reviews,
-            attributes: [
-                .foregroundColor: ColorTheme.shared.secondaryTextColor,
-                .font: UIFont.systemFont(ofSize: 10),
-                .kern: 1
-            ]
-        )
     }
 }
