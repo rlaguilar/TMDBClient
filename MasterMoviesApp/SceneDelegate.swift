@@ -32,16 +32,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let apiDataRetriever = APIDataRetriever(networkRequester: networkRequester)
         apiDataRetriever.retrieveData { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let data):
-                    APIData.shared = data
-                    let moviesDiscoverer = MoviesDiscoverer(networkRequester: networkRequester)
-                    let homeVC = MoviesViewController(moviesDiscoverer: moviesDiscoverer)
-                    self.window?.rootViewController = homeVC
-                case .failure(let error):
-                    print("Unable to retrieve API data with error: \(error)")
+            switch result {
+            case .success(let data):
+                APIData.shared = data
+                let moviesDiscoverer = MoviesDiscoverer(networkRequester: networkRequester)
+                
+                moviesDiscoverer.discoverMovies(forDate: Date()) { moviesResult in
+                    switch moviesResult {
+                    case .success(let content):
+                        DispatchQueue.main.async {
+                            let homeVC = MoviesViewController(featuredContent: content)
+                            self.window?.rootViewController = homeVC
+                        }
+                        
+                    case .failure(let error):
+                        print("Unable to retrieve API data with error: \(error)")
+                    }
                 }
+                
+            case .failure(let error):
+                print("Unable to retrieve API data with error: \(error)")
             }
         }
     }

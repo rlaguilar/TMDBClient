@@ -12,14 +12,14 @@ import Kingfisher
 public class MoviesViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
     private let dataSource = MoviesDataSource()
-    private let moviesDiscoverer: MoviesDiscoverer
+    private let featuredContent: [FeaturedContent]
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
-    public init(moviesDiscoverer: MoviesDiscoverer) {
-        self.moviesDiscoverer = moviesDiscoverer
+    public init(featuredContent: [FeaturedContent]) {
+        self.featuredContent = featuredContent
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -32,17 +32,7 @@ public class MoviesViewController: UIViewController {
         view.addSubview(collectionView)
         dataSource.collectionView = collectionView
         collectionView.contentInsetAdjustmentBehavior = .never
-        
-        moviesDiscoverer.discoverMovies(forDate: Date()) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let content):
-                    self.dataSource.featuredContents = content
-                case .failure(let error):
-                    print("Unable to discover movies with error: \(error)")
-                }
-            }
-        }
+        self.dataSource.featuredContents = featuredContent
     }
     
     public override func viewDidLayoutSubviews() {
