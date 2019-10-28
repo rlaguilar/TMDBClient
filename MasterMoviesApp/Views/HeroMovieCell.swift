@@ -35,9 +35,13 @@ class HeroMovieCell: UICollectionViewCell {
                 view.removeFromSuperview()
             }
             
-            ["THRILLER", "ACTION"].map { tagView(forTag: $0) }.forEach { tagView in
-                tagsContainer.addArrangedSubview(tagView)
-            }
+            let tags = movie?.genreIDs ?? []
+            
+            tags.compactMap { tagId in APIData.shared.genres.first(where: { $0.id == tagId })?.name }
+                .map { tagView(forTag: $0) }
+                .forEach { tagView in
+                    tagsContainer.addArrangedSubview(tagView)
+                }
             
             imageView.kf.setImage(with: movie?.backdropURL ?? movie?.posterURL)
         }

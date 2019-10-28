@@ -11,8 +11,8 @@ import Foundation
 public struct MoviesDiscoverer {
     private let networkRequester: NetworkRequester
     
-    public init(baseURL: URL, apiKey: String) {
-        networkRequester = NetworkRequester(baseURL: baseURL, extraParams: ["api_key": apiKey])
+    public init(networkRequester: NetworkRequester) {
+        self.networkRequester = networkRequester
     }
     
     func discoverMovies(forDate date: Date, completion: @escaping (Result<[FeaturedContent], Error>) -> Void) {
@@ -97,8 +97,8 @@ public struct DiscoverPopularMovies: APIRequest {
         params = ["sort_by": "popularity.desc"]
     }
     
-    public func parse(data: Data) throws -> [Movie] {
-        let page = try JSONDecoder().decode(ResponsePage<Movie>.self, from: data)
+    public func parse(data: Data, decoder: JSONDecoder) throws -> [Movie] {
+        let page = try decoder.decode(ResponsePage<Movie>.self, from: data)
         return page.results
     }
 }
@@ -120,8 +120,8 @@ public struct DiscoverTheaterMovies: APIRequest {
         ]
     }
     
-    public func parse(data: Data) throws -> [Movie] {
-        let page = try JSONDecoder().decode(ResponsePage<Movie>.self, from: data)
+    public func parse(data: Data, decoder: JSONDecoder) throws -> [Movie] {
+        let page = try decoder.decode(ResponsePage<Movie>.self, from: data)
         return page.results
     }
 }
@@ -144,8 +144,8 @@ public struct DiscoverComingSoonMovies: APIRequest {
         ]
     }
     
-    public func parse(data: Data) throws -> [Movie] {
-        let page = try JSONDecoder().decode(ResponsePage<Movie>.self, from: data)
+    public func parse(data: Data, decoder: JSONDecoder) throws -> [Movie] {
+        let page = try decoder.decode(ResponsePage<Movie>.self, from: data)
         return page.results
     }
 }

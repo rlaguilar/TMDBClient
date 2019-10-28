@@ -21,8 +21,8 @@ public struct Movie: Codable {
         guard let posterPath = posterPath else {
             return nil
         }
-        // TODO: Retrieve images configurations in the right way
-        return URL(string: "https://image.tmdb.org/t/p/w780/")?.appendingPathComponent(posterPath)
+        
+        return APIData.shared.config.url(for: posterPath, imageType: .poster)
     }
     
     var backdropURL: URL? {
@@ -30,15 +30,15 @@ public struct Movie: Codable {
             return nil
         }
         
-        return URL(string: "https://image.tmdb.org/t/p/w780/")?.appendingPathComponent(backdropPath)
+        return APIData.shared.config.url(for: backdropPath, imageType: .backdrop)
     }
     
     private enum CodingKeys: String, CodingKey {
         case id, title
-        case voteCount = "vote_count"
-        case voteAverage = "vote_average"
-        case genreIDs = "genre_ids"
-        case posterPath = "poster_path"
-        case backdropPath = "backdrop_path"
+        case voteCount
+        case voteAverage
+        case genreIDs = "genreIds"
+        case posterPath
+        case backdropPath
     }
 }

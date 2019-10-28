@@ -21,7 +21,7 @@ public protocol APIRequest {
     var method: HTTPMethod { get }
     var params: [String: Any] { get }
     
-    func parse(data: Data) throws -> ResponseType
+    func parse(data: Data, decoder: JSONDecoder) throws -> ResponseType
 }
 
 extension APIRequest {
@@ -47,12 +47,20 @@ extension APIRequest {
 public struct NetworkRequester {
     public let baseURL: URL
     public let extraParams: [String: Any]
+    public let jsonDecoder: JSONDecoder
+    
+    public init(baseURL: URL, extraParams: [String: Any]) {
+        self.baseURL = baseURL
+        self.extraParams = extraParams
+        self.jsonDecoder = JSONDecoder()
+        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+    }
     
     func send<Request: APIRequest>(request: Request, completion: @escaping (Result<Request.ResponseType, Error>) -> Void) {
         do {
             let urlRequest = try request.makeRequest(baseURL: baseURL, extraParams: extraParams)
             
-            let task = URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
+            let task = URLSession.shared.dataTask(with: urlRequest) { [jsonDecoder] (data, _, error) in
                 if let error = error {
                     if let data = data, let apiMessage = String(data: data, encoding: .utf8) {
                         completion(.failure(NetworkError.apiError(error: error, message: apiMessage)))
@@ -68,7 +76,7 @@ public struct NetworkRequester {
                     }
                     
                     do {
-                        let result = try request.parse(data: data)
+                        let result = try request.parse(data: data, decoder: jsonDecoder)
                         completion(.success(result))
                     }
                     catch {
@@ -102,11 +110,4 @@ public struct ResponsePage<T: Codable>: Codable {
     public let totalResults: Int
     public let totalPages: Int
     public let results: [T]
-    
-    private enum CodingKeys: String, CodingKey {
-        case page
-        case totalResults = "total_results"
-        case totalPages = "total_pages"
-        case results
-    }
 }
