@@ -32,6 +32,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="QAH-t2-3xz" secondAttribute="bottom" constant="80" id="BPG-OT-dPN"/>
                             <constraint firstItem="QAH-t2-3xz" firstAttribute="leading" secondItem="6a9-Xf-b4X" secondAttribute="leading" id="QRO-Cj-hGS"/>
                             <constraint firstItem="QAH-t2-3xz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="60" id="Wer-sY-8Ka"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="6a9-Xf-b4X" secondAttribute="trailing" id="mHH-tx-8E3"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -42,6 +43,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="tmdb-logo" width="408" height="161"/>
+        <image name="tmdb-logo" width="407.5" height="161"/>
     </resources>
 </document>
