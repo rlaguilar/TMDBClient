@@ -10,5 +10,5 @@ import Foundation
 
 public enum FeaturedContent {
     case single(Movie)
-    case multiple(name: String, movies: [Movie])
+    case section(name: String, movies: [Movie])
 }

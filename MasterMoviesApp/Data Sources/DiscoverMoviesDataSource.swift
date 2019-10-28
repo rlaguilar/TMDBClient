@@ -33,7 +33,7 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch featuredContents[section] {
-        case .multiple(_, let movies):
+        case .section(_, let movies):
             return movies.count
         case .single:
             return 1
@@ -46,7 +46,7 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hero", for: indexPath) as! HeroMovieCell
             cell.movie = movie
             return cell
-        case .multiple(_, let movies):
+        case .section(_, let movies):
             let movie = movies[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movie", for: indexPath) as! MovieCell
             cell.movie = movie
@@ -56,7 +56,7 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        guard case let .multiple(title, _) = featuredContents[indexPath.section] else {
+        guard case let .section(title, _) = featuredContents[indexPath.section] else {
             fatalError()
         }
         

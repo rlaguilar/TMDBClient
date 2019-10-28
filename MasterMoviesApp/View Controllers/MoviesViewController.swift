@@ -78,7 +78,7 @@ public class MoviesViewController: UIViewController {
 fileprivate extension FeaturedContent {
     var groupSize: NSCollectionLayoutSize {
         switch self {
-        case .multiple:
+        case .section:
             return NSCollectionLayoutSize(widthDimension: .absolute(232), heightDimension: .absolute(390))
         case .single:
             return NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(1.237333))
@@ -87,7 +87,7 @@ fileprivate extension FeaturedContent {
     
     var orthogonalScrollingBehaviour: UICollectionLayoutSectionOrthogonalScrollingBehavior {
         switch self {
-        case .multiple:
+        case .section:
             return .continuousGroupLeadingBoundary
         case .single: return .none
         }
@@ -95,7 +95,7 @@ fileprivate extension FeaturedContent {
     
     var sectionInsets: NSDirectionalEdgeInsets {
         switch self {
-        case .multiple:
+        case .section:
             return NSDirectionalEdgeInsets(top: 25, leading: 16, bottom: 40, trailing: 16)
         case .single: return NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 26, trailing: 0)
         }
@@ -103,7 +103,7 @@ fileprivate extension FeaturedContent {
     
     var sectionHeaders: [NSCollectionLayoutBoundarySupplementaryItem] {
         switch self {
-        case .multiple:
+        case .section:
             let sectionTitle = NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(0.7),

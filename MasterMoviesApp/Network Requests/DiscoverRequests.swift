@@ -68,16 +68,16 @@ public struct MoviesDiscoverer {
             theater.removeFirst()
             
             if !theater.isEmpty {
-                featuredContent.append(.multiple(name: "Movies on Theater", movies: Array(theater.prefix(6))))
+                featuredContent.append(.section(name: "Movies on Theater", movies: Array(theater.prefix(6))))
             }
         }
         
         if !comingSoon.isEmpty {
-            featuredContent.append(.multiple(name: "Coming Soon", movies: Array(comingSoon.prefix(6))))
+            featuredContent.append(.section(name: "Coming Soon", movies: Array(comingSoon.prefix(6))))
         }
         
         if !popular.isEmpty {
-            featuredContent.append(.multiple(name: "Popular Movies", movies: Array(popular.prefix(6))))
+            featuredContent.append(.section(name: "Popular Movies", movies: Array(popular.prefix(6))))
         }
         
         return featuredContent
