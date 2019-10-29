@@ -17,28 +17,7 @@ public struct Movie: Codable {
     public let posterPath: String?
     public let backdropPath: String?
     
-    var posterURL: URL? {
-        guard let posterPath = posterPath else {
-            return nil
-        }
-        
-        return APIData.shared.config.url(for: posterPath, imageType: .poster)
-    }
-    
-    var backdropURL: URL? {
-        guard let backdropPath = backdropPath else {
-            return nil
-        }
-        
-        return APIData.shared.config.url(for: backdropPath, imageType: .backdrop)
-    }
-    
     private enum CodingKeys: String, CodingKey {
-        case id, title
-        case voteCount
-        case voteAverage
-        case genreIDs = "genreIds"
-        case posterPath
-        case backdropPath
+        case id, title, voteCount, genreIDs = "genreIds", voteAverage, posterPath, backdropPath
     }
 }

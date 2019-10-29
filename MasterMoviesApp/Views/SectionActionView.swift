@@ -14,17 +14,20 @@ class SectionActionView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(button)
-        button.setAttributedTitle(FontTheme.shared.small(string: "SEE ALL"), for: .normal)
     }
     
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func update(fontTheme: FontTheme) {
+        button.setAttributedTitle(fontTheme.small(string: "SEE ALL"), for: .normal)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         button.sizeToFit()
         button.center = CGPoint(x: bounds.width - button.bounds.width / 2, y: button.bounds.midY)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

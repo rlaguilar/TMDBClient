@@ -1,5 +1,5 @@
 //
-//  TMDBConfig.swift
+//  APIImageConfig.swift
 //  MasterMoviesApp
 //
 //  Created by Reynaldo Aguilar on 28/10/19.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct TMDBConfig: Codable {
+public struct APIImageConfig: Codable {
     public let baseUrl: String
     public let backdropSizes: [String]
     public let posterSizes: [String]

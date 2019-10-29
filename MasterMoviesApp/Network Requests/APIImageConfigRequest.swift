@@ -1,5 +1,5 @@
 //
-//  GenreRequest.swift
+//  APIImageConfigRequest.swift
 //  MasterMoviesApp
 //
 //  Created by Reynaldo Aguilar on 28/10/19.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct GenresRequest: APIRequest {
+public struct APIImageConfigRequest: APIRequest {
     public let path: String
     
     public let method: HTTPMethod
@@ -16,16 +16,16 @@ public struct GenresRequest: APIRequest {
     public let params: [String : Any]
     
     public init() {
-        path = "genre/movie/list"
+        path = "configuration"
         method = .get
         params = [:]
     }
     
-    public func parse(data: Data, decoder: JSONDecoder) throws -> [Genre] {
-        return try decoder.decode(GenreList.self, from: data).genres
+    public func parse(data: Data, decoder: JSONDecoder) throws -> APIImageConfig {
+        return try decoder.decode(Wrapper.self, from: data).images
     }
     
-    private struct GenreList: Codable {
-        let genres: [Genre]
+    private struct Wrapper: Codable {
+        let images: APIImageConfig
     }
 }

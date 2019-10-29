@@ -8,23 +8,14 @@
 
 import UIKit
 
-class MovieCell: UICollectionViewCell {
+import Kingfisher
+
+public class MovieCell: UICollectionViewCell {
     private let titleLabel = UILabel()
     private let reviewCounterView = ReviewCounterView()
     private let imageView = UIImageView()
     
-    var movie: Movie? {
-        didSet {
-            let fontTheme = FontTheme.shared
-            titleLabel.attributedText = fontTheme.subtitle(string: movie?.title ?? "")
-            reviewCounterView.count = ReviewCount(total: movie?.voteCount ?? 0, average: movie?.voteAverage ?? 0)
-            imageView.kf.setImage(with: movie?.posterURL)
-            setNeedsLayout()
-            layoutIfNeeded()
-        }
-    }
-    
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(imageView)
         imageView.backgroundColor = .lightGray
@@ -54,8 +45,30 @@ class MovieCell: UICollectionViewCell {
         ])
     }
     
+    public func update(movie: Movie, dependencies: Dependencies) {
+        let visual = dependencies.visual
+        titleLabel.attributedText = visual.fontTheme.subtitle(string: movie.title)
+        reviewCounterView.onColor = visual.colorTheme.accentColor
+        reviewCounterView.offColor = visual.colorTheme.offColor
+        reviewCounterView.count = ReviewCount(total: movie.voteCount, average: movie.voteAverage)
+
+        if let poster = movie.posterPath {
+            imageView.kf.setImage(with: dependencies.data.imageConfig.url(for: poster, imageType: .poster))
+        }
+        else if let backdrop = movie.backdropPath {
+            imageView.kf.setImage(with: dependencies.data.imageConfig.url(for: backdrop, imageType: .backdrop))
+        }
+        
+        else {
+            imageView.kf.setImage(with: Optional<Resource>.none)
+        }
+        
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    
     @available(*, unavailable)
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

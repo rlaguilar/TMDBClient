@@ -11,91 +11,30 @@ import Foundation
 public enum NetworkError: Error {
     case badRequest
     case badResponse
-    case apiError(error: Error, message: String)
+    case apiError(statusCode: Int, message: String?)
+}
+
+public protocol NetworkRequest {
+    associatedtype Response
+    
+    func makeURLRequest() throws -> URLRequest
+    
+    func parse(data: Data) throws -> Response
 }
 
 public protocol APIRequest {
-    associatedtype ResponseType
+    associatedtype Response
     
     var path: String { get }
     var method: HTTPMethod { get }
     var params: [String: Any] { get }
     
-    func parse(data: Data, decoder: JSONDecoder) throws -> ResponseType
-}
-
-extension APIRequest {
-    func makeRequest(baseURL: URL, extraParams: [String: Any]) throws -> URLRequest {
-        let allParams = params.map { $0 } + extraParams.map { $0 }
-        var components = URLComponents()
-        components.path = path
-        
-        components.queryItems = allParams.map { param -> URLQueryItem in
-            URLQueryItem(name: param.key, value: "\(param.value)")
-        }
-        
-        guard let url = components.url(relativeTo: baseURL) else {
-            throw NetworkError.badRequest
-        }
-        
-        let request = NSMutableURLRequest(url: url)
-        request.httpMethod = method.stringRepresentation
-        return request as URLRequest
-    }
-}
-
-public struct NetworkRequester {
-    public let baseURL: URL
-    public let extraParams: [String: Any]
-    public let jsonDecoder: JSONDecoder
-    
-    public init(baseURL: URL, extraParams: [String: Any]) {
-        self.baseURL = baseURL
-        self.extraParams = extraParams
-        self.jsonDecoder = JSONDecoder()
-        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-    }
-    
-    func send<Request: APIRequest>(request: Request, completion: @escaping (Result<Request.ResponseType, Error>) -> Void) {
-        do {
-            let urlRequest = try request.makeRequest(baseURL: baseURL, extraParams: extraParams)
-            
-            let task = URLSession.shared.dataTask(with: urlRequest) { [jsonDecoder] (data, _, error) in
-                if let error = error {
-                    if let data = data, let apiMessage = String(data: data, encoding: .utf8) {
-                        completion(.failure(NetworkError.apiError(error: error, message: apiMessage)))
-                    }
-                    else {
-                        completion(.failure(error))
-                    }
-                }
-                else {
-                    guard let data = data else {
-                        completion(.failure(NetworkError.badResponse))
-                        return
-                    }
-                    
-                    do {
-                        let result = try request.parse(data: data, decoder: jsonDecoder)
-                        completion(.success(result))
-                    }
-                    catch {
-                        completion(.failure(error))
-                    }
-                }
-            }
-            
-            task.resume()
-        }
-        catch {
-            completion(.failure(error))
-        }
-    }
+    func parse(data: Data, decoder: JSONDecoder) throws -> Response
 }
 
 public enum HTTPMethod {
     case get
-    case post([String: AnyHashable])
+    case post([String: Any])
     
     var stringRepresentation: String {
         switch self {
@@ -105,9 +44,42 @@ public enum HTTPMethod {
     }
 }
 
-public struct ResponsePage<T: Codable>: Codable {
-    public let page: Int
-    public let totalResults: Int
-    public let totalPages: Int
-    public let results: [T]
+public struct NetworkClient {
+    func send<Request: NetworkRequest>(request: Request, completion: @escaping (Result<Request.Response, Error>) -> Void) {
+        do {
+            try URLSession.shared.dataTask(with: request.makeURLRequest()) { (data, response, error) in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completion(.failure(NetworkError.badResponse))
+                    return
+                }
+                
+                guard (200 ..< 300).contains(httpResponse.statusCode) else {
+                    let message = data.map { String(data: $0, encoding: .utf8) } ?? nil
+                    completion(.failure(NetworkError.apiError(statusCode: httpResponse.statusCode, message: message)))
+                    return
+                }
+                
+                guard let data = data else {
+                    completion(.failure(NetworkError.badResponse))
+                    return
+                }
+                
+                do {
+                    try completion(.success(request.parse(data: data)))
+                }
+                catch {
+                    completion(.failure(error))
+                }
+                
+            }.resume()
+        }
+        catch {
+            completion(.failure(error))
+        }
+    }
 }

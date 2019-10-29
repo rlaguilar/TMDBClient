@@ -15,7 +15,7 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
         }
     }
     
-    weak var collectionView: UICollectionView? {
+    public weak var collectionView: UICollectionView? {
         didSet {
             collectionView?.dataSource = self
             collectionView?.delegate = self
@@ -25,6 +25,12 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
             collectionView?.register(SectionTitleView.self, forSupplementaryViewOfKind: "section-title", withReuseIdentifier: "section-title")
             collectionView?.register(SectionActionView.self, forSupplementaryViewOfKind: "section-action", withReuseIdentifier: "section-action")
         }
+    }
+    
+    private let dependencies: Dependencies
+    
+    public init(dependencies: Dependencies) {
+        self.dependencies = dependencies
     }
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -44,12 +50,12 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
         switch featuredContents[indexPath.section] {
         case .single(let movie):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hero", for: indexPath) as! HeroMovieCell
-            cell.movie = movie
+            cell.update(movie: movie, dependencies: dependencies)
             return cell
         case .section(_, let movies):
             let movie = movies[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movie", for: indexPath) as! MovieCell
-            cell.movie = movie
+            cell.update(movie: movie, dependencies: dependencies)
             return cell
         }
     }
@@ -62,11 +68,12 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
         
         if kind == "section-title" {
             let sectionTitleView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! SectionTitleView
-            sectionTitleView.title = title
+            sectionTitleView.update(title: title, fontTheme: dependencies.visual.fontTheme)
             return sectionTitleView
         }
         else {
             let sectionActionView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! SectionActionView
+            sectionActionView.update(fontTheme: dependencies.visual.fontTheme)
             return sectionActionView
         }
     }

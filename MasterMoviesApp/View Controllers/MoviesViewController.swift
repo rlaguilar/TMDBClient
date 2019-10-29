@@ -11,24 +11,29 @@ import Kingfisher
 
 public class MoviesViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-    private let dataSource = MoviesDataSource()
+    private let dataSource: MoviesDataSource
     private let featuredContent: [FeaturedContent]
+    private let dependencies: Dependencies
     
     public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
-    public init(featuredContent: [FeaturedContent]) {
+    public init(featuredContent: [FeaturedContent], dependencies: Dependencies) {
         self.featuredContent = featuredContent
+        self.dependencies = dependencies
+        self.dataSource = MoviesDataSource(dependencies: dependencies)
+        
         super.init(nibName: nil, bundle: nil)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = ColorTheme.shared.backgroundColor
+        let colorTheme = dependencies.visual.colorTheme
+        view.backgroundColor = colorTheme.backgroundColor
         collectionView.backgroundColor = .clear
-        collectionView.indicatorStyle = ColorTheme.shared.scrollIndicatorStyle
+        collectionView.indicatorStyle = colorTheme.scrollIndicatorStyle
         view.addSubview(collectionView)
         dataSource.collectionView = collectionView
         collectionView.contentInsetAdjustmentBehavior = .never

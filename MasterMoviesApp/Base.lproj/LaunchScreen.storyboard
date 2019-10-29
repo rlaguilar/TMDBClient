@@ -16,7 +16,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tmdb-logo" translatesAutoresizingMaskIntoConstraints="NO" id="QAH-t2-3xz">
-                                <rect key="frame" x="60" y="621" width="294" height="161"/>
+                                <rect key="frame" x="60" y="460" width="294" height="322"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MOV-e" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6a9-Xf-b4X">
                                 <rect key="frame" x="60" y="414.5" width="192" height="67"/>

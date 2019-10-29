@@ -19,29 +19,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        let visual = VisualDependencies(
+            colorTheme: ColorTheme(),
+            fontTheme: FontTheme(colorTheme: ColorTheme())
+        )
+        
         let window = UIWindow(windowScene: windowScene)
-        let splashVC = SplahViewController()
+        let splashVC = SplahViewController(colorTheme: visual.colorTheme)
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
         self.window = window
         
-        let networkRequester = NetworkRequester(
-            baseURL: URL(string: "https://api.themoviedb.org/3/")!,
-            extraParams: ["api_key": "340528aae953e802b9f330ecb5aedbed"]
-        )
-        
-        let apiDataRetriever = APIDataRetriever(networkRequester: networkRequester)
-        apiDataRetriever.retrieveData { result in
+        let client = NetworkClient()
+        let dataResolver = DataDependenciesResolver(client: client)
+        dataResolver.resolveData { result in
             switch result {
             case .success(let data):
-                APIData.shared = data
-                let moviesDiscoverer = MoviesDiscoverer(networkRequester: networkRequester)
+                let dependencies = Dependencies(
+                    visual: visual,
+                    data: data
+                )
+                
+                let moviesDiscoverer = MoviesDiscoverer(client: client)
                 
                 moviesDiscoverer.discoverMovies(forDate: Date()) { moviesResult in
                     switch moviesResult {
                     case .success(let content):
                         DispatchQueue.main.async {
-                            let homeVC = MoviesViewController(featuredContent: content)
+                            let homeVC = MoviesViewController(featuredContent: content, dependencies: dependencies)
                             self.window?.rootViewController = homeVC
                         }
                         

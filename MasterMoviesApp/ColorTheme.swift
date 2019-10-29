@@ -9,10 +9,8 @@
 import UIKit
 
 public struct ColorTheme {
-    public static let shared = ColorTheme()
-    
     public let accentColor: UIColor = UIColor(r: 251, g: 77, b: 92)
-    public var backgroundColor = UIColor(r: 29, g: 28, b: 39)
+    public let backgroundColor = UIColor(r: 29, g: 28, b: 39)
     public let primaryTextColor: UIColor = .white
     public let secondaryTextColor = UIColor(r: 202, g: 203, b: 216)
     public let borderColor: UIColor = .lightGray

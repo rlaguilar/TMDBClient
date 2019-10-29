@@ -9,12 +9,11 @@
 import UIKit
 
 public struct FontTheme {
-    public static let shared = FontTheme()
-    
+    public let colorTheme: ColorTheme // TODO: Refactor this class so that it doesn't need the reference to the color theme
     public func largeTitle(string: String) -> NSAttributedString {
         return attributtedString(
             string: string,
-            foregroundColor: ColorTheme.shared.secondaryTextColor,
+            foregroundColor: colorTheme.secondaryTextColor,
             font: UIFont.systemFont(ofSize: 30),
             kern: 1.2,
             lineSpacing: 28
@@ -24,7 +23,7 @@ public struct FontTheme {
     public func title(string: String) -> NSAttributedString {
         return attributtedString(
             string: string,
-            foregroundColor: ColorTheme.shared.primaryTextColor,
+            foregroundColor: colorTheme.primaryTextColor,
             font: UIFont.systemFont(ofSize: 20),
             kern: 1.2,
             lineSpacing: 28
@@ -34,7 +33,7 @@ public struct FontTheme {
     public func subtitle(string: String) -> NSAttributedString {
         return attributtedString(
             string: string,
-            foregroundColor: ColorTheme.shared.primaryTextColor,
+            foregroundColor: colorTheme.primaryTextColor,
             font: UIFont.systemFont(ofSize: 16),
             kern: 1.2,
             lineSpacing: 28
@@ -44,7 +43,7 @@ public struct FontTheme {
     public func body(string: String) -> NSAttributedString {
         return attributtedString(
             string: string,
-            foregroundColor: ColorTheme.shared.secondaryTextColor,
+            foregroundColor: colorTheme.secondaryTextColor,
             font: UIFont.systemFont(ofSize: 14),
             kern: 1,
             lineSpacing: 0
@@ -54,7 +53,7 @@ public struct FontTheme {
     public func small(string: String) -> NSAttributedString {
         return attributtedString(
             string: string,
-            foregroundColor: ColorTheme.shared.secondaryTextColor,
+            foregroundColor: colorTheme.secondaryTextColor,
             font: UIFont.systemFont(ofSize: 10),
             kern: 1,
             lineSpacing: 0

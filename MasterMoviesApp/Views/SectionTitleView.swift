@@ -11,24 +11,22 @@ import UIKit
 class SectionTitleView: UICollectionReusableView {
     private let label = UILabel()
     
-    var title: String? {
-        didSet {
-            label.attributedText = FontTheme.shared.title(string: title ?? "")
-        }
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(label)
     }
     
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func update(title: String, fontTheme: FontTheme) {
+        label.attributedText = fontTheme.title(string: title)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         label.frame = bounds
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

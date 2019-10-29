@@ -42,6 +42,18 @@ public class ReviewCounterView: UIView {
     
     private let label = UILabel()
     
+    public var onColor: UIColor = .green {
+        didSet {
+            updateStarsColor()
+        }
+    }
+    
+    public var offColor: UIColor = .lightGray {
+        didSet {
+            updateStarsColor()
+        }
+    }
+    
     public var style: Style = .small {
         didSet {
             updateLabelText()
@@ -56,23 +68,23 @@ public class ReviewCounterView: UIView {
             
             for (index, view) in starsContainer.arrangedSubviews.enumerated() {
                 if index < stars {
-                    view.tintColor = ColorTheme.shared.accentColor
+                    view.tintColor = onColor
                 }
                 else {
-                    view.tintColor = ColorTheme.shared.offColor
+                    view.tintColor = offColor
                 }
             }
         }
     }
     
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    public init() {
+        super.init(frame: .zero)
         
         let starViews = (0 ..< 5).map { _ -> UIImageView in
             let imageView = UIImageView(image: #imageLiteral(resourceName: "star"))
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.tintAdjustmentMode = .normal
-            imageView.tintColor = ColorTheme.shared.offColor
+            imageView.tintColor = offColor
             NSLayoutConstraint.activate([
                 imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1)
             ])
@@ -103,8 +115,19 @@ public class ReviewCounterView: UIView {
         resizeStarViews()
     }
     
+    private func updateStarsColor() {
+        for (index, star) in starsContainer.arrangedSubviews.enumerated() {
+            if index < count.starsCount {
+                star.tintColor = onColor
+            }
+            else {
+                star.tintColor = offColor
+            }
+        }
+    }
+    
     private func updateLabelText() {
-        label.attributedText = style.formattedReviewText(string: count.text)
+        label.attributedText = style.formattedReviewText(string: count.text, fontTheme: FontTheme(colorTheme: ColorTheme()))
     }
     
     private var starWidthConstraint: NSLayoutConstraint?
@@ -126,12 +149,12 @@ public class ReviewCounterView: UIView {
         case small
         case large
         
-        fileprivate func formattedReviewText(string: String) -> NSAttributedString {
+        fileprivate func formattedReviewText(string: String, fontTheme: FontTheme) -> NSAttributedString {
             switch self {
             case .small:
-                return FontTheme.shared.small(string: string)
+                return fontTheme.small(string: string)
             case .large:
-                return FontTheme.shared.body(string: string)
+                return fontTheme.body(string: string)
             }
         }
         

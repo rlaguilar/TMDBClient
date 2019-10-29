@@ -9,11 +9,13 @@
 import UIKit
 
 public class SplahViewController: UIViewController {
-    private let appNameLabel: UILabel = {
+    private let colorTheme: ColorTheme
+    
+    private lazy var appNameLabel: UILabel = {
         let label = UILabel()
         label.text = "MOV-e"
         label.font = UIFont.systemFont(ofSize: 56, weight: .black)
-        label.textColor = ColorTheme.shared.accentColor
+        label.textColor = colorTheme.accentColor
         return label
     }()
     
@@ -22,6 +24,11 @@ public class SplahViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+    
+    public init(colorTheme: ColorTheme) {
+        self.colorTheme = colorTheme
+        super.init(nibName: nil, bundle: nil)
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,5 +49,10 @@ public class SplahViewController: UIViewController {
             appNameLabel.leadingAnchor.constraint(equalTo: logoImageView.leadingAnchor),
             appNameLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
