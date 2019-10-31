@@ -9,17 +9,9 @@
 import Foundation
 
 public struct GenresRequest: APIRequest {
-    public let path: String
-    
-    public let method: HTTPMethod
-    
-    public let params: [String : Any]
-    
-    public init() {
-        path = "genre/movie/list"
-        method = .get
-        params = [:]
-    }
+    public let path = "genre/movie/list"
+    public let method: HTTPMethod = .get
+    public let params: [String : Any] = [:]
     
     public func parse(data: Data, decoder: JSONDecoder) throws -> [Genre] {
         return try decoder.decode(GenreList.self, from: data).genres

@@ -70,6 +70,11 @@ public class MoviesViewController: UIViewController {
     }
 }
 
+public struct FeatureContentLayout {
+    public static let sectionTitleElementKind  = "section-title-kind"
+    public static let sectionActionElementKind  = "section-action-kind"
+}
+
 fileprivate extension FeaturedContent {
     var groupSize: NSCollectionLayoutSize {
         switch self {
@@ -104,7 +109,7 @@ fileprivate extension FeaturedContent {
                     widthDimension: .fractionalWidth(0.7),
                     heightDimension: .estimated(24)
                 ),
-                elementKind: "section-title",
+                elementKind: FeatureContentLayout.sectionTitleElementKind,
                 alignment: .topLeading
             )
             
@@ -113,7 +118,7 @@ fileprivate extension FeaturedContent {
                     widthDimension: .fractionalWidth(0.3),
                     heightDimension: .estimated(24)
                 ),
-                elementKind: "section-action",
+                elementKind: FeatureContentLayout.sectionActionElementKind,
                 alignment: .topTrailing
             )
             

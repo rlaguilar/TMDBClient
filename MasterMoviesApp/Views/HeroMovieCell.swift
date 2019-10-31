@@ -19,7 +19,7 @@ class HeroMovieCell: UICollectionViewCell {
     private let imageView = UIImageView()
     private let gradientView = GradientView()
     
-    private let tagsContainer = UIStackView()
+    private let genresContainer = UIStackView()
     private let reviewCounterView = ReviewCounterView()
     private let titleLabel = UILabel()
 
@@ -37,15 +37,15 @@ class HeroMovieCell: UICollectionViewCell {
         contentView.addSubview(reviewCounterView)
         reviewCounterView.style = .large
         
-        contentView.addSubview(tagsContainer)
-        tagsContainer.axis = .horizontal
-        tagsContainer.spacing = 8
+        contentView.addSubview(genresContainer)
+        genresContainer.axis = .horizontal
+        genresContainer.spacing = 8
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         reviewCounterView.translatesAutoresizingMaskIntoConstraints = false
-        tagsContainer.translatesAutoresizingMaskIntoConstraints = false
+        genresContainer.translatesAutoresizingMaskIntoConstraints = false
         
         let constraints = [
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -58,12 +58,12 @@ class HeroMovieCell: UICollectionViewCell {
             gradientView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             gradientView.topAnchor.constraint(equalTo: titleLabel.topAnchor),
             
-            tagsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            tagsContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            tagsContainer.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16),
+            genresContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            genresContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            genresContainer.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16),
             
-            reviewCounterView.bottomAnchor.constraint(equalTo: tagsContainer.topAnchor, constant: -20),
-            reviewCounterView.leadingAnchor.constraint(equalTo: tagsContainer.leadingAnchor),
+            reviewCounterView.bottomAnchor.constraint(equalTo: genresContainer.topAnchor, constant: -20),
+            reviewCounterView.leadingAnchor.constraint(equalTo: genresContainer.leadingAnchor),
             
             titleLabel.bottomAnchor.constraint(equalTo: reviewCounterView.topAnchor, constant: -14),
             titleLabel.leadingAnchor.constraint(equalTo: reviewCounterView.leadingAnchor),
@@ -83,19 +83,17 @@ class HeroMovieCell: UICollectionViewCell {
         reviewCounterView.onColor = dependencies.visual.colorTheme.accentColor
         reviewCounterView.offColor = dependencies.visual.colorTheme.offColor
         
-        let arrangedSubviews = tagsContainer.arrangedSubviews
+        let arrangedSubviews = genresContainer.arrangedSubviews
         
         for view in arrangedSubviews {
-            tagsContainer.removeArrangedSubview(view)
+            genresContainer.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
-        
-        let tags = movie.genreIDs
-        
-        tags.compactMap { tagId in dependencies.data.genres.first(where: { $0.id == tagId })?.name }
-            .map { tagView(forTag: $0, visual: dependencies.visual) }
-            .forEach { tagView in
-                tagsContainer.addArrangedSubview(tagView)
+
+        movie.genreIDs.compactMap { genreId in dependencies.data.genres.first(where: { $0.id == genreId })?.name }
+            .map { GenreView(genre: $0, visual: dependencies.visual) }
+            .forEach { genreView in
+                genresContainer.addArrangedSubview(genreView)
             }
         
         if let backdrop = movie.backdropPath {
@@ -107,31 +105,6 @@ class HeroMovieCell: UICollectionViewCell {
         else {
             imageView.kf.setImage(with: Optional<Resource>.none)
         }
-    }
-    
-    private func tagView(forTag tag: String, visual: VisualDependencies) -> UIView {
-        let label = UILabel()
-        label.attributedText = visual.fontTheme.small(string: tag)
-        
-        let view = UIView()
-        view.backgroundColor = .clear
-        view.layer.borderWidth = 0.5
-        view.layer.borderColor = visual.colorTheme.borderColor.cgColor
-        view.layer.cornerRadius = 4
-        view.addSubview(label)
-        
-        view.translatesAutoresizingMaskIntoConstraints = false
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
-        let constraints = [
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            label.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -16),
-            label.heightAnchor.constraint(equalTo: view.heightAnchor, constant: -10)
-        ]
-        
-        NSLayoutConstraint.activate(constraints)
-        return view
     }
     
     @available(*, unavailable)
@@ -149,6 +122,36 @@ class HeroMovieCell: UICollectionViewCell {
                 let gradientLayer = layer as! CAGradientLayer
                 gradientLayer.colors = colors.map { $0.cgColor }
             }
+        }
+    }
+    
+    private class GenreView: UIView {
+        private let label = UILabel()
+        
+        init(genre: String, visual: VisualDependencies) {
+            super.init(frame: .zero)
+            
+            label.attributedText = visual.fontTheme.small(string: genre)
+            
+            backgroundColor = .clear
+            layer.borderWidth = 0.5
+            layer.borderColor = visual.colorTheme.borderColor.cgColor
+            layer.cornerRadius = 4
+            addSubview(label)
+            
+            label.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: centerYAnchor),
+                label.widthAnchor.constraint(equalTo: widthAnchor, constant: -16),
+                label.heightAnchor.constraint(equalTo: heightAnchor, constant: -10)
+            ])
+        }
+        
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
         }
     }
 }

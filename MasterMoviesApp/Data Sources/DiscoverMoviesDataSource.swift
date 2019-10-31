@@ -8,7 +8,12 @@
 
 import UIKit
 
-public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate {
+public class MoviesDataSource: NSObject, UICollectionViewDataSource {
+    private let sectionTitleIdentifier = "section-title"
+    private let sectionActionIdentifier = "section-action"
+    private let heroMovieIdentifier = "hero-movie"
+    private let standardMovieIdentifier = "standard-movie"
+    
     public var featuredContents: [FeaturedContent] = [] {
         didSet {
             collectionView?.reloadData()
@@ -18,12 +23,19 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
     public weak var collectionView: UICollectionView? {
         didSet {
             collectionView?.dataSource = self
-            collectionView?.delegate = self
             
-            collectionView?.register(HeroMovieCell.self, forCellWithReuseIdentifier: "hero")
-            collectionView?.register(MovieCell.self, forCellWithReuseIdentifier: "movie")
-            collectionView?.register(SectionTitleView.self, forSupplementaryViewOfKind: "section-title", withReuseIdentifier: "section-title")
-            collectionView?.register(SectionActionView.self, forSupplementaryViewOfKind: "section-action", withReuseIdentifier: "section-action")
+            collectionView?.register(HeroMovieCell.self, forCellWithReuseIdentifier: heroMovieIdentifier)
+            collectionView?.register(MovieCell.self, forCellWithReuseIdentifier: standardMovieIdentifier)
+            collectionView?.register(
+                SectionTitleView.self,
+                forSupplementaryViewOfKind: FeatureContentLayout.sectionTitleElementKind,
+                withReuseIdentifier: sectionTitleIdentifier
+            )
+            collectionView?.register(
+                SectionActionView.self,
+                forSupplementaryViewOfKind: FeatureContentLayout.sectionActionElementKind,
+                withReuseIdentifier: sectionActionIdentifier
+            )
         }
     }
     
@@ -49,12 +61,12 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch featuredContents[indexPath.section] {
         case .single(let movie):
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hero", for: indexPath) as! HeroMovieCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: heroMovieIdentifier, for: indexPath) as! HeroMovieCell
             cell.update(movie: movie, dependencies: dependencies)
             return cell
         case .section(_, let movies):
             let movie = movies[indexPath.item]
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "movie", for: indexPath) as! MovieCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: standardMovieIdentifier, for: indexPath) as! MovieCell
             cell.update(movie: movie, dependencies: dependencies)
             return cell
         }
@@ -66,13 +78,23 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource, UICollectio
             fatalError()
         }
         
-        if kind == "section-title" {
-            let sectionTitleView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! SectionTitleView
+        if kind == FeatureContentLayout.sectionTitleElementKind {
+            let sectionTitleView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: sectionTitleIdentifier,
+                for: indexPath
+                ) as! SectionTitleView
+            
             sectionTitleView.update(title: title, fontTheme: dependencies.visual.fontTheme)
             return sectionTitleView
         }
         else {
-            let sectionActionView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! SectionActionView
+            let sectionActionView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: sectionActionIdentifier,
+                for: indexPath
+                ) as! SectionActionView
+            
             sectionActionView.update(fontTheme: dependencies.visual.fontTheme)
             return sectionActionView
         }

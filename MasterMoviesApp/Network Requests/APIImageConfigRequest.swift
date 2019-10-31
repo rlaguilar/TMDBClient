@@ -9,17 +9,9 @@
 import Foundation
 
 public struct APIImageConfigRequest: APIRequest {
-    public let path: String
-    
-    public let method: HTTPMethod
-    
-    public let params: [String : Any]
-    
-    public init() {
-        path = "configuration"
-        method = .get
-        params = [:]
-    }
+    public let path = "configuration"
+    public let method: HTTPMethod = .get
+    public let params: [String : Any] = [:]
     
     public func parse(data: Data, decoder: JSONDecoder) throws -> APIImageConfig {
         return try decoder.decode(Wrapper.self, from: data).images

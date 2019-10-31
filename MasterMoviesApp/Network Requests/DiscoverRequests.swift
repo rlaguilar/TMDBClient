@@ -9,15 +9,9 @@
 import Foundation
 
 public struct DiscoverPopularMovies: APIRequest {
-    public let path: String
-    public let method: HTTPMethod
-    public let params: [String : Any]
-    
-    public init() {
-        path = "discover/movie"
-        method = .get
-        params = ["sort_by": "popularity.desc"]
-    }
+    public let path = "discover/movie"
+    public let method: HTTPMethod = .get
+    public let params: [String : Any] = ["sort_by": "popularity.desc"]
     
     public func parse(data: Data, decoder: JSONDecoder) throws -> [Movie] {
         let page = try decoder.decode(PageResponse<Movie>.self, from: data)
@@ -25,14 +19,13 @@ public struct DiscoverPopularMovies: APIRequest {
     }
 }
 
+// FIXME: This type and the comming soon one should be merged into one and then passing the date range as parameters
 public struct DiscoverTheaterMovies: APIRequest {
-    public let path: String
-    public let method: HTTPMethod
+    public let path = "discover/movie"
+    public let method: HTTPMethod = .get
     public let params: [String : Any]
     
     public init(atDate date: Date) {
-        path = "discover/movie"
-        method = .get
         let oneMonthOldDate = Calendar.current.date(byAdding: .month, value: -1, to: date) ?? date
         params = [
             "primary_release_date.gte": oneMonthOldDate.formatedForAPIRequest,
@@ -47,13 +40,11 @@ public struct DiscoverTheaterMovies: APIRequest {
 }
 
 public struct DiscoverComingSoonMovies: APIRequest {
-    public let path: String
-    public let method: HTTPMethod
+    public let path = "discover/movie"
+    public let method: HTTPMethod = .get
     public let params: [String : Any]
     
     public init(atDate date: Date) {
-        path = "discover/movie"
-        method = .get
         let nextMonthDate = Calendar.current.date(byAdding: .month, value: 1, to: date) ?? date
         let tomorrowDate = Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
         params = [
