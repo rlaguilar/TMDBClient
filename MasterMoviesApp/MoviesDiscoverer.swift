@@ -18,29 +18,26 @@ public struct MoviesDiscoverer {
     func discoverMovies(forDate date: Date, completion: @escaping (Result<[FeaturedContent], Error>) -> Void) {
         let dispatchGroup = DispatchGroup()
         
-        let theaterRequest = DiscoverTheaterMovies(atDate: date)
         var theaterResult: Result<[Movie], Error>!
         
         dispatchGroup.enter()
-        client.send(request: theaterRequest) { result in
+        client.request(endpoint: Endpoint.Discover.theaterMovies(at: date), parser: DiscoverParser()) { result in
             theaterResult = result
             dispatchGroup.leave()
         }
         
-        let comingSoonRequest = DiscoverComingSoonMovies(atDate: date)
         var comingSoonResult: Result<[Movie], Error>!
         
         dispatchGroup.enter()
-        client.send(request: comingSoonRequest) { result in
+        client.request(endpoint: Endpoint.Discover.comingSoonMovies(at: date), parser: DiscoverParser()) { result in
             comingSoonResult = result
             dispatchGroup.leave()
         }
         
-        let popularRequest = DiscoverPopularMovies()
         var popularResult: Result<[Movie], Error>!
         
         dispatchGroup.enter()
-        client.send(request: popularRequest) { result in
+        client.request(endpoint: Endpoint.Discover.popularMovies(), parser: DiscoverParser()) { result in
             popularResult = result
             dispatchGroup.leave()
         }

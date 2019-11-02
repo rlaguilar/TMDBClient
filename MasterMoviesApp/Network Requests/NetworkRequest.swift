@@ -14,22 +14,20 @@ public enum NetworkError: Error {
     case apiError(statusCode: Int, message: String?)
 }
 
-public protocol NetworkRequest {
-    associatedtype Response
-    
-    func makeURLRequest() throws -> URLRequest
-    
-    func parse(data: Data) throws -> Response
+public struct Endpoint {
+    let path: String
+    let method: HTTPMethod
+    let params: [String: Any]
 }
 
-public protocol APIRequest {
-    associatedtype Response
+public protocol URLRequestMaker {
+    func request(for endpoint: Endpoint) throws -> URLRequest
+}
+
+public protocol ResponseParser {
+    associatedtype Value
     
-    var path: String { get }
-    var method: HTTPMethod { get }
-    var params: [String: Any] { get }
-    
-    func parse(data: Data, decoder: JSONDecoder) throws -> Response
+    func parse(response: Data) throws -> Value
 }
 
 public enum HTTPMethod {
@@ -44,10 +42,16 @@ public enum HTTPMethod {
     }
 }
 
-public struct NetworkClient {
-    func send<Request: NetworkRequest>(request: Request, completion: @escaping (Result<Request.Response, Error>) -> Void) {
+public class NetworkClient {
+    private let requestMaker: URLRequestMaker
+    
+    public init(requestMaker: URLRequestMaker) {
+        self.requestMaker = requestMaker
+    }
+    
+    func request<Parser: ResponseParser>(endpoint: Endpoint, parser: Parser, completion: @escaping (Result<Parser.Value, Error>) -> Void) {
         do {
-            try URLSession.shared.dataTask(with: request.makeURLRequest()) { (data, response, error) in
+            try URLSession.shared.dataTask(with: requestMaker.request(for: endpoint)) { (data, response, error) in
                 if let error = error {
                     completion(.failure(error))
                     return
@@ -70,7 +74,7 @@ public struct NetworkClient {
                 }
                 
                 do {
-                    try completion(.success(request.parse(data: data)))
+                    try completion(.success(parser.parse(response: data)))
                 }
                 catch {
                     completion(.failure(error))

@@ -8,16 +8,20 @@
 
 import Foundation
 
-public struct APIImageConfigRequest: APIRequest {
-    public let path = "configuration"
-    public let method: HTTPMethod = .get
-    public let params: [String : Any] = [:]
+public extension Endpoint {
+    static func imageConfig() -> Endpoint {
+        return Endpoint(path: "configuration", method: .get, params: [:])
+    }
+}
+
+public struct ImageConfigParser: ResponseParser {
+    private let configurationParser = APIReponseParser<Configuration>()
     
-    public func parse(data: Data, decoder: JSONDecoder) throws -> APIImageConfig {
-        return try decoder.decode(Wrapper.self, from: data).images
+    public func parse(response: Data) throws -> APIImageConfig {
+        return try configurationParser.parse(response: response).images
     }
     
-    private struct Wrapper: Codable {
+    private struct Configuration: Codable {
         let images: APIImageConfig
     }
 }

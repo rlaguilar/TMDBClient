@@ -18,20 +18,18 @@ public struct DataDependenciesResolver {
     func resolveData(completion: @escaping (Result<DataDependencies, Error>) -> Void) {
         let dispatchGroup = DispatchGroup()
         
-        let configRequest = APIImageConfigRequest()
         var configResult: Result<APIImageConfig, Error>!
         
         dispatchGroup.enter()
-        client.send(request: configRequest) { result in
+        client.request(endpoint: Endpoint.imageConfig(), parser: ImageConfigParser()) { result in
             configResult = result
             dispatchGroup.leave()
         }
         
-        let genresRequest = GenresRequest()
         var genresResult: Result<[Genre], Error>!
         
         dispatchGroup.enter()
-        client.send(request: genresRequest) { result in
+        client.request(endpoint: Endpoint.movieGenres(), parser: MovieGenresParser()) { result in
             genresResult = result
             dispatchGroup.leave()
         }

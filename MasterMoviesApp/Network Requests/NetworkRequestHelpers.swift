@@ -8,13 +8,23 @@
 
 import Foundation
 
-extension APIRequest {
-    func makeRequest(baseURL: URL, extraParams: [String: Any]) throws -> URLRequest {
-        let allParams = params.map { $0 } + extraParams.map { $0 }
-        var components = URLComponents()
-        components.path = path
+public struct APIRequestMaker: URLRequestMaker {
+    public static let prod = APIRequestMaker(
+        baseURL: URL(string: "https://api.themoviedb.org/3/")!,
+        apiKey: "340528aae953e802b9f330ecb5aedbed"
+    )
+    
+    public let baseURL: URL
+    public let apiKey: String
+    
+    public func request(for endpoint: Endpoint) throws -> URLRequest {
+        var params = endpoint.params
+        params["api_key"] = apiKey
         
-        components.queryItems = allParams.map { param -> URLQueryItem in
+        var components = URLComponents()
+        components.path = endpoint.path
+        
+        components.queryItems = params.map { param -> URLQueryItem in
             URLQueryItem(name: param.key, value: "\(param.value)")
         }
         
@@ -23,9 +33,9 @@ extension APIRequest {
         }
         
         let request = NSMutableURLRequest(url: url)
-        request.httpMethod = method.stringRepresentation
+        request.httpMethod = endpoint.method.stringRepresentation
         
-        switch method {
+        switch endpoint.method {
         case .post(let body):
             request.httpBody = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
         case .get:
@@ -36,42 +46,14 @@ extension APIRequest {
     }
 }
 
-public struct APIRequestWrapper<Request: APIRequest>: NetworkRequest {
-    public let apiRequest: Request
-    
-    public let baseURL: URL
-    public let extraParams: [String: Any]
-    
-    public init(apiRequest: Request) {
-        self.apiRequest = apiRequest
-        // TODO: Move this to CI configs
-        extraParams = ["api_key": "340528aae953e802b9f330ecb5aedbed"]
-        baseURL = URL(string: "https://api.themoviedb.org/3/")!
-    }
-    
-    private let jsonDecoder: JSONDecoder = {
+public struct APIReponseParser<Value: Decodable>: ResponseParser {
+    private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
     
-    public func makeURLRequest() throws -> URLRequest {
-        return try apiRequest.makeRequest(baseURL: baseURL, extraParams: extraParams)
-    }
-    
-    public func parse(data: Data) throws -> Request.Response {
-        return try apiRequest.parse(data: data, decoder: jsonDecoder)
-    }
-}
-
-public extension APIRequest {
-    func wrapped() -> APIRequestWrapper<Self> {
-        return APIRequestWrapper(apiRequest: self)
-    }
-}
-
-public extension NetworkClient {
-    func send<Request: APIRequest>(request: Request, completion: @escaping (Result<Request.Response, Error>) -> Void) {
-        send(request: request.wrapped(), completion: completion)
+    public func parse(response: Data) throws -> Value {
+        return try decoder.decode(Value.self, from: response)
     }
 }

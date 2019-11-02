@@ -8,13 +8,17 @@
 
 import Foundation
 
-public struct GenresRequest: APIRequest {
-    public let path = "genre/movie/list"
-    public let method: HTTPMethod = .get
-    public let params: [String : Any] = [:]
+public extension Endpoint {
+    static func movieGenres() -> Endpoint {
+        return Endpoint(path: "genre/movie/list", method: .get, params: [:])
+    }
+}
+
+public struct MovieGenresParser: ResponseParser {
+    private let genreParser = APIReponseParser<GenreList>()
     
-    public func parse(data: Data, decoder: JSONDecoder) throws -> [Genre] {
-        return try decoder.decode(GenreList.self, from: data).genres
+    public func parse(response: Data) throws -> [Genre] {
+        return try genreParser.parse(response: response).genres
     }
     
     private struct GenreList: Codable {
