@@ -19,9 +19,8 @@ public struct MoviesDiscoverer {
         let dispatchGroup = DispatchGroup()
         
         var theaterResult: Result<[Movie], Error>!
-        
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.Discover.theaterMovies(at: date), parser: DiscoverParser()) { result in
+        client.request(endpoint: Endpoint.Discover.theaterMovies(at: date)) { result in
             theaterResult = result
             dispatchGroup.leave()
         }
@@ -29,7 +28,7 @@ public struct MoviesDiscoverer {
         var comingSoonResult: Result<[Movie], Error>!
         
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.Discover.comingSoonMovies(at: date), parser: DiscoverParser()) { result in
+        client.request(endpoint: Endpoint.Discover.comingSoonMovies(at: date)) { result in
             comingSoonResult = result
             dispatchGroup.leave()
         }
@@ -37,7 +36,7 @@ public struct MoviesDiscoverer {
         var popularResult: Result<[Movie], Error>!
         
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.Discover.popularMovies(), parser: DiscoverParser()) { result in
+        client.request(endpoint: Endpoint.Discover.popularMovies()) { result in
             popularResult = result
             dispatchGroup.leave()
         }

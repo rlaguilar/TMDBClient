@@ -8,17 +8,17 @@
 
 import Foundation
 
-public extension Endpoint {
+public extension Endpoint where Parser == MovieGenresParser {
     static func movieGenres() -> Endpoint {
-        return Endpoint(path: "genre/movie/list", method: .get, params: [:])
+        return Endpoint(path: "genre/movie/list", method: .get, params: [:], parser: MovieGenresParser())
     }
 }
 
 public struct MovieGenresParser: ResponseParser {
     private let genreParser = APIReponseParser<GenreList>()
     
-    public func parse(response: Data) throws -> [Genre] {
-        return try genreParser.parse(response: response).genres
+    public func parse(data: Data) throws -> [Genre] {
+        return try genreParser.parse(data: data).genres
     }
     
     private struct GenreList: Codable {

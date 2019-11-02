@@ -8,17 +8,17 @@
 
 import Foundation
 
-public extension Endpoint {
+public extension Endpoint where Parser == ImageConfigParser {
     static func imageConfig() -> Endpoint {
-        return Endpoint(path: "configuration", method: .get, params: [:])
+        return Endpoint(path: "configuration", method: .get, params: [:], parser: ImageConfigParser())
     }
 }
 
 public struct ImageConfigParser: ResponseParser {
     private let configurationParser = APIReponseParser<Configuration>()
     
-    public func parse(response: Data) throws -> APIImageConfig {
-        return try configurationParser.parse(response: response).images
+    public func parse(data: Data) throws -> APIImageConfig {
+        return try configurationParser.parse(data: data).images
     }
     
     private struct Configuration: Codable {

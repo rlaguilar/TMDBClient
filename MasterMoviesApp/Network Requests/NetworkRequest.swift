@@ -14,20 +14,21 @@ public enum NetworkError: Error {
     case apiError(statusCode: Int, message: String?)
 }
 
-public struct Endpoint {
+public struct Endpoint<Parser: ResponseParser> {
     let path: String
     let method: HTTPMethod
     let params: [String: Any]
-}
-
-public protocol URLRequestMaker {
-    func request(for endpoint: Endpoint) throws -> URLRequest
+    let parser: Parser
 }
 
 public protocol ResponseParser {
-    associatedtype Value
+    associatedtype Response
     
-    func parse(response: Data) throws -> Value
+    func parse(data: Data) throws -> Response
+}
+
+public protocol RequestBuilder {
+    func request<Parser>(for endpoint: Endpoint<Parser>) throws -> URLRequest
 }
 
 public enum HTTPMethod {
@@ -43,15 +44,15 @@ public enum HTTPMethod {
 }
 
 public class NetworkClient {
-    private let requestMaker: URLRequestMaker
+    private let builder: RequestBuilder
     
-    public init(requestMaker: URLRequestMaker) {
-        self.requestMaker = requestMaker
+    public init(requestBuilder: RequestBuilder) {
+        self.builder = requestBuilder
     }
     
-    func request<Parser: ResponseParser>(endpoint: Endpoint, parser: Parser, completion: @escaping (Result<Parser.Value, Error>) -> Void) {
+    func request<Parser>(endpoint: Endpoint<Parser>, completion: @escaping (Result<Parser.Response, Error>) -> Void) {
         do {
-            try URLSession.shared.dataTask(with: requestMaker.request(for: endpoint)) { (data, response, error) in
+            try URLSession.shared.dataTask(with: builder.request(for: endpoint)) { (data, response, error) in
                 if let error = error {
                     completion(.failure(error))
                     return
@@ -74,7 +75,7 @@ public class NetworkClient {
                 }
                 
                 do {
-                    try completion(.success(parser.parse(response: data)))
+                    try completion(.success(endpoint.parser.parse(data: data)))
                 }
                 catch {
                     completion(.failure(error))

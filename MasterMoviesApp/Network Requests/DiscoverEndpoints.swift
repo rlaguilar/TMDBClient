@@ -8,10 +8,10 @@
 
 import Foundation
 
-public extension Endpoint {
+public extension Endpoint where Parser == DiscoverParser {
     struct Discover {
         static func popularMovies() -> Endpoint {
-            return Endpoint(path: "discover/movie", method: .get, params: ["sort_by": "popularity.desc"])
+            return Endpoint(path: "discover/movie", method: .get, params: ["sort_by": "popularity.desc"], parser: DiscoverParser())
         }
         
         static func theaterMovies(at date: Date) -> Endpoint {
@@ -36,7 +36,8 @@ public extension Endpoint {
                 params: [
                     "primary_release_date.gte": formatter.string(from: from),
                     "primary_release_date.lte": formatter.string(from: to)
-                ]
+                ],
+                parser: DiscoverParser()
             )
         }
     }
@@ -45,7 +46,7 @@ public extension Endpoint {
 public struct DiscoverParser: ResponseParser {
     private let pageReponseParser = APIReponseParser<PageResponse<Movie>>()
     
-    public func parse(response: Data) throws -> [Movie] {
-        return try pageReponseParser.parse(response: response).results
+    public func parse(data: Data) throws -> [Movie] {
+        return try pageReponseParser.parse(data: data).results
     }
 }

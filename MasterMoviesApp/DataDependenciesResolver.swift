@@ -21,7 +21,7 @@ public struct DataDependenciesResolver {
         var configResult: Result<APIImageConfig, Error>!
         
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.imageConfig(), parser: ImageConfigParser()) { result in
+        client.request(endpoint: Endpoint.imageConfig()) { result in
             configResult = result
             dispatchGroup.leave()
         }
@@ -29,7 +29,7 @@ public struct DataDependenciesResolver {
         var genresResult: Result<[Genre], Error>!
         
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.movieGenres(), parser: MovieGenresParser()) { result in
+        client.request(endpoint: Endpoint.movieGenres()) { result in
             genresResult = result
             dispatchGroup.leave()
         }

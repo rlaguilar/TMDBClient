@@ -8,8 +8,8 @@
 
 import Foundation
 
-public struct APIRequestMaker: URLRequestMaker {
-    public static let prod = APIRequestMaker(
+public struct APIRequestBuilder: RequestBuilder {
+    public static let prod = APIRequestBuilder(
         baseURL: URL(string: "https://api.themoviedb.org/3/")!,
         apiKey: "340528aae953e802b9f330ecb5aedbed"
     )
@@ -17,7 +17,7 @@ public struct APIRequestMaker: URLRequestMaker {
     public let baseURL: URL
     public let apiKey: String
     
-    public func request(for endpoint: Endpoint) throws -> URLRequest {
+    public func request<Parser>(for endpoint: Endpoint<Parser>) throws -> URLRequest {
         var params = endpoint.params
         params["api_key"] = apiKey
         
@@ -46,14 +46,14 @@ public struct APIRequestMaker: URLRequestMaker {
     }
 }
 
-public struct APIReponseParser<Value: Decodable>: ResponseParser {
+public struct APIReponseParser<Response: Decodable>: ResponseParser {
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
     
-    public func parse(response: Data) throws -> Value {
-        return try decoder.decode(Value.self, from: response)
+    public func parse(data: Data) throws -> Response {
+        return try decoder.decode(Response.self, from: data)
     }
 }
