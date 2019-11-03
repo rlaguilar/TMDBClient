@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum NetworkError: Error {
+public enum NetworkError: Error, Equatable {
     case badRequest
     case badResponse
     case apiError(statusCode: Int, message: String?)
@@ -45,14 +45,16 @@ public enum HTTPMethod {
 
 public class NetworkClient {
     private let builder: RequestBuilder
+    private let session: URLSession
     
-    public init(requestBuilder: RequestBuilder) {
+    public init(requestBuilder: RequestBuilder, session: URLSession = .shared) {
         self.builder = requestBuilder
+        self.session = session
     }
     
     func request<Parser>(endpoint: Endpoint<Parser>, completion: @escaping (Result<Parser.Response, Error>) -> Void) {
         do {
-            try URLSession.shared.dataTask(with: builder.request(for: endpoint)) { (data, response, error) in
+            try session.dataTask(with: builder.request(for: endpoint)) { (data, response, error) in
                 if let error = error {
                     completion(.failure(error))
                     return
@@ -80,7 +82,6 @@ public class NetworkClient {
                 catch {
                     completion(.failure(error))
                 }
-                
             }.resume()
         }
         catch {
