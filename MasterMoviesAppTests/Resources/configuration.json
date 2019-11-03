@@ -1,0 +1,33 @@
+{
+    "images": {
+        "base_url": "http://image.tmdb.org/t/p/",
+        "secure_base_url": "https://image.tmdb.org/t/p/",
+        "backdrop_sizes": [
+            "w300",
+            "original"
+        ],
+        "logo_sizes": [
+            "w500",
+            "original"
+        ],
+        "poster_sizes": [
+            "w92",
+            "w780",
+            "original"
+        ],
+        "profile_sizes": [
+            "w45",
+            "original"
+        ],
+        "still_sizes": [
+            "w92",
+            "w300",
+            "original"
+        ]
+    },
+    "change_keys": [
+        "adult",
+        "air_date",
+        "videos"
+    ]
+}

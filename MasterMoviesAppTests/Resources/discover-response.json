@@ -1,0 +1,26 @@
+{
+    "page": 1,
+    "total_results": 1,
+    "total_pages": 1,
+    "results": [
+        {
+            "popularity": 513.78,
+            "vote_count": 4120,
+            "video": false,
+            "poster_path": "/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+            "id": 475557,
+            "adult": false,
+            "backdrop_path": "/n6bUvigpRFqSwmPp1m2YADdbRBc.jpg",
+            "original_language": "en",
+            "original_title": "Joker",
+            "genre_ids": [
+                80,
+                18
+            ],
+            "title": "Joker",
+            "vote_average": 8.6,
+            "overview": "Overview.",
+            "release_date": "2019-10-04"
+        }
+    ]
+}
