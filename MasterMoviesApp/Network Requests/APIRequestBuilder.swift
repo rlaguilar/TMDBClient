@@ -1,8 +1,8 @@
 //
-//  NetworkRequestHelpers.swift
+//  APIRequestBuilder.swift
 //  MasterMoviesApp
 //
-//  Created by Reynaldo Aguilar on 29/10/19.
+//  Created by Reynaldo Aguilar on 25/11/19.
 //  Copyright © 2019 Reynaldo Aguilar. All rights reserved.
 //
 
@@ -10,16 +10,13 @@ import Foundation
 
 public struct APIRequestBuilder: RequestBuilder {
     public static let prod = APIRequestBuilder(
-        baseURL: URL(string: "https://api.themoviedb.org/3/")!,
-        apiKey: "340528aae953e802b9f330ecb5aedbed"
+        baseURL: URL(string: "https://api.themoviedb.org/3/")!
     )
     
     public let baseURL: URL
-    public let apiKey: String
     
-    public func request<Parser>(for endpoint: Endpoint<Parser>) throws -> URLRequest {
-        var params = endpoint.params
-        params["api_key"] = apiKey
+    public func request<Parser>(for endpoint: Endpoint<Parser>, additionalParams: [String: Any]) throws -> URLRequest {
+        let params = endpoint.params.merging(additionalParams, uniquingKeysWith: { _, new in new })
         
         var components = URLComponents()
         components.path = endpoint.path
@@ -43,17 +40,5 @@ public struct APIRequestBuilder: RequestBuilder {
         }
         
         return request as URLRequest
-    }
-}
-
-public struct APIReponseParser<Response: Decodable>: ResponseParser {
-    private let decoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }()
-    
-    public func parse(data: Data) throws -> Response {
-        return try decoder.decode(Response.self, from: data)
     }
 }

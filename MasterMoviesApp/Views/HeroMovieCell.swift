@@ -97,10 +97,10 @@ class HeroMovieCell: UICollectionViewCell {
             }
         
         if let backdrop = movie.backdropPath {
-            imageView.kf.setImage(with: dependencies.data.imageConfig.url(for: backdrop, imageType: .backdrop))
+            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forBackdropPath: backdrop))
         }
         else if let poster = movie.posterPath {
-            imageView.kf.setImage(with: dependencies.data.imageConfig.url(for: poster, imageType: .poster))
+            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forPosterPath: poster))
         }
         else {
             imageView.kf.setImage(with: Optional<Resource>.none)

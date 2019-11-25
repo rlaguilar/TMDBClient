@@ -37,7 +37,8 @@ public struct DataDependenciesResolver {
         dispatchGroup.notify(queue: .global()) {
             switch (configResult!, genresResult!) {
             case let (.success(config), .success(genres)):
-                completion(.success(DataDependencies(genres: genres, imageConfig: config)))
+                // TODO: Handle optional image URL builder here
+                completion(.success(DataDependencies(genres: genres, imageURLBuilder: ImageURLBuilder(usingAPIConfig: config)!)))
             case let (.failure(error), _):
                 completion(.failure(error))
             case let (_, .failure(error)):

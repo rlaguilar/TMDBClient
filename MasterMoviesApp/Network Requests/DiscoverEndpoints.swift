@@ -23,7 +23,6 @@ public extension Endpoint where Parser == DiscoverParser {
             let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
             let oneMonthLater = Calendar.current.date(byAdding: .month, value: 1, to: date) ?? date
             return releasedMovies(from: nextDay, to: oneMonthLater)
-            
         }
         
         static private func releasedMovies(from: Date, to: Date) -> Endpoint {

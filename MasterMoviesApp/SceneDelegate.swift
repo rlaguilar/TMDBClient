@@ -30,7 +30,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
         self.window = window
         
-        let client = NetworkClient(requestBuilder: APIRequestBuilder.prod)
+        let client = NetworkClient(
+            requestBuilder: APIRequestBuilder.prod,
+            helpers: APIAuthHelper(), BackgroundTaskHelper(), RequestProfiler()
+        )
+        
         let dataResolver = DataDependenciesResolver(client: client)
         dataResolver.resolveData { result in
             switch result {

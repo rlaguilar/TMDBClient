@@ -20,5 +20,5 @@ public struct VisualDependencies {
 
 public struct DataDependencies {
     public let genres: [Genre]
-    public let imageConfig: APIImageConfig
+    public let imageURLBuilder: ImageURLBuilder
 }

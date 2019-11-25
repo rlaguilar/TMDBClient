@@ -53,10 +53,10 @@ public class MovieCell: UICollectionViewCell {
         reviewCounterView.count = ReviewCount(total: movie.voteCount, average: movie.voteAverage)
 
         if let poster = movie.posterPath {
-            imageView.kf.setImage(with: dependencies.data.imageConfig.url(for: poster, imageType: .poster))
+            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forPosterPath: poster))
         }
         else if let backdrop = movie.backdropPath {
-            imageView.kf.setImage(with: dependencies.data.imageConfig.url(for: backdrop, imageType: .backdrop))
+            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forBackdropPath: backdrop))
         }
         
         else {

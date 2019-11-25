@@ -28,7 +28,43 @@ public protocol ResponseParser {
 }
 
 public protocol RequestBuilder {
-    func request<Parser>(for endpoint: Endpoint<Parser>) throws -> URLRequest
+    func request<Parser>(for endpoint: Endpoint<Parser>, additionalParams: [String: Any]) throws -> URLRequest
+}
+
+public protocol RequestHelper {
+    var additionalParams: [String: Any] { get }
+    
+    func willSend(request: URLRequest)
+    
+    func didReceiveResponse(for request: URLRequest)
+}
+
+public struct MergedRequestHelper: RequestHelper {
+    private let helpers: [RequestHelper]
+    
+    public var additionalParams: [String : Any] {
+        return self.helpers
+            .map { $0.additionalParams }
+            .reduce([:]) { union, params -> [String: Any] in
+                union.merging(params, uniquingKeysWith: { _, new in new })
+            }
+    }
+    
+    public init(helpers: [RequestHelper]) {
+        self.helpers = helpers
+    }
+    
+    public func willSend(request: URLRequest) {
+        for helper in helpers {
+            helper.willSend(request: request)
+        }
+    }
+    
+    public func didReceiveResponse(for request: URLRequest) {
+        for helper in helpers {
+            helper.didReceiveResponse(for: request)
+        }
+    }
 }
 
 public enum HTTPMethod {
@@ -46,15 +82,22 @@ public enum HTTPMethod {
 public class NetworkClient {
     private let builder: RequestBuilder
     private let session: URLSession
+    private let helper: RequestHelper
     
-    public init(requestBuilder: RequestBuilder, session: URLSession = .shared) {
+    public init(requestBuilder: RequestBuilder, session: URLSession = .shared, helpers: RequestHelper...) {
         self.builder = requestBuilder
         self.session = session
+        helper = MergedRequestHelper(helpers: helpers)
     }
     
     func request<Parser>(endpoint: Endpoint<Parser>, completion: @escaping (Result<Parser.Response, Error>) -> Void) {
         do {
-            try session.dataTask(with: builder.request(for: endpoint)) { (data, response, error) in
+            let request = try builder.request(for: endpoint, additionalParams: helper.additionalParams)
+            helper.willSend(request: request)
+            
+            session.dataTask(with: request) { [helper] (data, response, error) in
+                helper.didReceiveResponse(for: request)
+                
                 if let error = error {
                     completion(.failure(error))
                     return
