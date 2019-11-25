@@ -1,5 +1,5 @@
 //
-//  GenreRequest.swift
+//  GenreEndpoint.swift
 //  MasterMoviesApp
 //
 //  Created by Reynaldo Aguilar on 28/10/19.

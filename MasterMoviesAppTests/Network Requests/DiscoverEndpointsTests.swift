@@ -33,7 +33,7 @@ class DiscoverEndpointsTests: XCTestCase {
     func testPopularMovies_HasCorrectMethod() {
         let endpoint = Endpoint.Discover.popularMovies()
         
-        XCTAssertEqual(endpoint.method.stringRepresentation, HTTPMethod.get.stringRepresentation)
+        XCTAssertEqual(endpoint.method.text, HTTPMethod.get.text)
     }
     
     func testPopularMovies_ContainsCorrectParams() {
@@ -58,7 +58,7 @@ class DiscoverEndpointsTests: XCTestCase {
     func testTheaterMovies_HasCorrectMethod() {
         let endpoint = Endpoint.Discover.theaterMovies(at: Date())
         
-        XCTAssertEqual(endpoint.method.stringRepresentation, HTTPMethod.get.stringRepresentation)
+        XCTAssertEqual(endpoint.method.text, HTTPMethod.get.text)
     }
     
     func testTheaterMovies_ContainsCorrectParams() {
@@ -86,7 +86,7 @@ class DiscoverEndpointsTests: XCTestCase {
     func testComingSoonMovies_HasCorrectMethod() {
         let endpoint = Endpoint.Discover.theaterMovies(at: Date())
         
-        XCTAssertEqual(endpoint.method.stringRepresentation, HTTPMethod.get.stringRepresentation)
+        XCTAssertEqual(endpoint.method.text, HTTPMethod.get.text)
     }
     
     func testComingSoonMovies_ContainsCorrectParams() {

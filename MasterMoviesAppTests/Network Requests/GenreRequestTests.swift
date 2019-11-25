@@ -22,7 +22,7 @@ class GenreRequestTests: XCTestCase {
     }
     
     func testEndpoint_HasCorrectMethod() {
-        XCTAssertEqual(endpoint.method.stringRepresentation, HTTPMethod.get.stringRepresentation)
+        XCTAssertEqual(endpoint.method.text, HTTPMethod.get.text)
     }
     
     func testEndpoint_HasValidParser() throws {

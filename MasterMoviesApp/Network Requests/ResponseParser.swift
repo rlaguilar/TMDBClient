@@ -8,6 +8,12 @@
 
 import Foundation
 
+public protocol ResponseParser {
+    associatedtype Response
+    
+    func parse(data: Data) throws -> Response
+}
+
 public struct APIReponseParser<Response: Decodable>: ResponseParser {
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()

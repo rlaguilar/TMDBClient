@@ -9,21 +9,7 @@
 import Foundation
 import UIKit
 
-public struct APIAuthHelper: RequestHelper {
-    public let extraParams: RequestParams
-    
-    public init(apiKey: String = "340528aae953e802b9f330ecb5aedbed") {
-        extraParams = ["api_key": apiKey]
-    }
-    
-    public func willSend(request: URLRequest) {}
-    
-    public func didReceiveResponse(for request: URLRequest) {}
-}
-
-public class BackgroundTaskHelper: RequestHelper {
-    public let extraParams: RequestParams = [:]
-    
+public class BackgroundTaskStarter: NetoworkClientObserver {
     private let syncQueue = DispatchQueue(label: "com.mastermoviesapp.background-task-helper.sync-queue")
     
     private var taskIdentifiers: [URLRequest: UIBackgroundTaskIdentifier] = [:]
@@ -58,9 +44,7 @@ public class BackgroundTaskHelper: RequestHelper {
     }
 }
 
-public class RequestProfiler: RequestHelper {
-    public let extraParams: RequestParams = [:]
-    
+public class RequestProfiler: NetoworkClientObserver {
     private var startTimes: [URLRequest: Date] = [:]
     
     public func willSend(request: URLRequest) {

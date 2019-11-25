@@ -32,7 +32,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let client = NetworkClient(
             requestBuilder: APIRequestBuilder.prod,
-            helpers: APIAuthHelper(), BackgroundTaskHelper(), RequestProfiler()
+            observers: [BackgroundTaskStarter(), RequestProfiler()],
+            modifiers: [APIEndpointAuthenticator()]
         )
         
         let dataResolver = DataDependenciesResolver(client: client)

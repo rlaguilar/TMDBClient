@@ -20,7 +20,7 @@ class NetworkClientTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
         let session = URLSession(configuration: config)
-        return NetworkClient(requestBuilder: mockRequestBuilder, session: session)
+        return NetworkClient(requestBuilder: mockRequestBuilder, session: session, observers: [], modifiers: [])
     }()
     
     func testClient_PerformsCorrectURLRequest() {
@@ -99,7 +99,7 @@ class NetworkClientTests: XCTestCase {
 private struct MockRequestBuilder: RequestBuilder {
     let request: URLRequest
     
-    func request<Parser>(for endpoint: Endpoint<Parser>, extraParams: [String: Any]) throws -> URLRequest {
+    func request<Parser>(for endpoint: Endpoint<Parser>) throws -> URLRequest {
         return request
     }
 }

@@ -39,15 +39,6 @@ class APIRequestBuilderTests: XCTestCase {
         XCTAssertEqual(request.url!.path, expectedPath)
     }
     
-    func testRequest_ContainsAdditionalParams() throws {
-        let endpoint = createEndpoint()
-        let apiKey = "abc"
-        
-        let request = try buildRequest(for: endpoint, additionalParams: ["api_key": apiKey])
-
-        XCTAssert(request.url!.query!.contains("api_key=\(apiKey)"))
-    }
-    
     func testRequest_ContainsEndpointParams() throws {
         let params: [String: Any] = ["a": 1, "b": "hello"]
         let endpoint = createEndpoint(withParams: params)
@@ -57,31 +48,6 @@ class APIRequestBuilderTests: XCTestCase {
         for param in params {
             XCTAssert(request.url!.query!.contains("\(param.key)=\(param.value)"))
         }
-    }
-    
-    func testRequest_MergeEndpointParamsAndAdditionalParams() throws {
-        let params: [String: Any] = ["a": 1]
-        let additionalParams: [String: Any] = ["b": 2]
-        let allParams: [String: Any] = ["a": 1, "b": 2]
-        
-        let endpoint = createEndpoint(withParams: params)
-        
-        let request = try buildRequest(for: endpoint, additionalParams: additionalParams)
-        
-        for param in allParams {
-            XCTAssert(request.url!.query!.contains("\(param.key)=\(param.value)"))
-        }
-    }
-    
-    func testRequest_WhenAdditionlParamsClashWithEndpointParams_UserAdditionalParamsValue() throws {
-        let params: [String: Any] = ["a": 1]
-        let additionalParams: [String: Any] = ["a": 2]
-        let endpoint = createEndpoint(withParams: params)
-        
-        let request = try buildRequest(for: endpoint, additionalParams: additionalParams)
-        
-        XCTAssert(request.url!.query!.contains("a=2"))
-        XCTAssert(!request.url!.query!.contains("a=1"))
     }
     
     func testRequest_ForGetEndpoint_HasGetHTTPMethod() throws {
@@ -112,8 +78,8 @@ class APIRequestBuilderTests: XCTestCase {
         }
     }
     
-    private func buildRequest<T>(for endpoint: Endpoint<T>, additionalParams: [String: Any] = [:]) throws -> URLRequest {
-        return try builder.request(for: endpoint, extraParams: additionalParams)
+    private func buildRequest<T>(for endpoint: Endpoint<T>) throws -> URLRequest {
+        return try builder.request(for: endpoint)
     }
 }
 
