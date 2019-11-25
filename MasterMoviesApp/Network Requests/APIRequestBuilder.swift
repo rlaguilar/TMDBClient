@@ -15,8 +15,8 @@ public struct APIRequestBuilder: RequestBuilder {
     
     public let baseURL: URL
     
-    public func request<Parser>(for endpoint: Endpoint<Parser>, additionalParams: [String: Any]) throws -> URLRequest {
-        let params = endpoint.params.merging(additionalParams, uniquingKeysWith: { _, new in new })
+    public func request<Parser>(for endpoint: Endpoint<Parser>, extraParams: RequestParams) throws -> URLRequest {
+        let params = endpoint.params.merging(extraParams, uniquingKeysWith: { _, new in new })
         
         var components = URLComponents()
         components.path = endpoint.path

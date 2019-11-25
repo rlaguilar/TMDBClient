@@ -10,10 +10,10 @@ import Foundation
 import UIKit
 
 public struct APIAuthHelper: RequestHelper {
-    public let additionalParams: [String : Any]
+    public let extraParams: RequestParams
     
     public init(apiKey: String = "340528aae953e802b9f330ecb5aedbed") {
-        additionalParams = ["api_key": apiKey]
+        extraParams = ["api_key": apiKey]
     }
     
     public func willSend(request: URLRequest) {}
@@ -22,7 +22,7 @@ public struct APIAuthHelper: RequestHelper {
 }
 
 public class BackgroundTaskHelper: RequestHelper {
-    public let additionalParams: [String : Any] = [:]
+    public let extraParams: RequestParams = [:]
     
     private let syncQueue = DispatchQueue(label: "com.mastermoviesapp.background-task-helper.sync-queue")
     
@@ -59,7 +59,7 @@ public class BackgroundTaskHelper: RequestHelper {
 }
 
 public class RequestProfiler: RequestHelper {
-    public let additionalParams: [String : Any] = [:]
+    public let extraParams: RequestParams = [:]
     
     private var startTimes: [URLRequest: Date] = [:]
     
@@ -71,7 +71,7 @@ public class RequestProfiler: RequestHelper {
         guard let start = startTimes[request] else {
             return
         }
-        
+
         startTimes[request] = nil
         let time = Date().timeIntervalSince(start)
         print("It took \(time) seconds to perform request to \(request)")

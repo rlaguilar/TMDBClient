@@ -8,6 +8,8 @@
 
 import Foundation
 
+public typealias RequestParams = [String: Any]
+
 public enum NetworkError: Error, Equatable {
     case badRequest
     case badResponse
@@ -17,7 +19,7 @@ public enum NetworkError: Error, Equatable {
 public struct Endpoint<Parser: ResponseParser> {
     let path: String
     let method: HTTPMethod
-    let params: [String: Any]
+    let params: RequestParams
     let parser: Parser
 }
 
@@ -28,11 +30,11 @@ public protocol ResponseParser {
 }
 
 public protocol RequestBuilder {
-    func request<Parser>(for endpoint: Endpoint<Parser>, additionalParams: [String: Any]) throws -> URLRequest
+    func request<Parser>(for endpoint: Endpoint<Parser>, extraParams: RequestParams) throws -> URLRequest
 }
 
 public protocol RequestHelper {
-    var additionalParams: [String: Any] { get }
+    var extraParams: RequestParams { get }
     
     func willSend(request: URLRequest)
     
@@ -42,10 +44,10 @@ public protocol RequestHelper {
 public struct MergedRequestHelper: RequestHelper {
     private let helpers: [RequestHelper]
     
-    public var additionalParams: [String : Any] {
+    public var extraParams: RequestParams {
         return self.helpers
-            .map { $0.additionalParams }
-            .reduce([:]) { union, params -> [String: Any] in
+            .map { $0.extraParams }
+            .reduce([:]) { union, params in
                 union.merging(params, uniquingKeysWith: { _, new in new })
             }
     }
@@ -92,7 +94,7 @@ public class NetworkClient {
     
     func request<Parser>(endpoint: Endpoint<Parser>, completion: @escaping (Result<Parser.Response, Error>) -> Void) {
         do {
-            let request = try builder.request(for: endpoint, additionalParams: helper.additionalParams)
+            let request = try builder.request(for: endpoint, extraParams: helper.extraParams)
             helper.willSend(request: request)
             
             session.dataTask(with: request) { [helper] (data, response, error) in

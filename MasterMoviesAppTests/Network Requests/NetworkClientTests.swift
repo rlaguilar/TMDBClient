@@ -99,7 +99,7 @@ class NetworkClientTests: XCTestCase {
 private struct MockRequestBuilder: RequestBuilder {
     let request: URLRequest
     
-    func request<Parser>(for endpoint: Endpoint<Parser>, additionalParams: [String: Any]) throws -> URLRequest {
+    func request<Parser>(for endpoint: Endpoint<Parser>, extraParams: [String: Any]) throws -> URLRequest {
         return request
     }
 }

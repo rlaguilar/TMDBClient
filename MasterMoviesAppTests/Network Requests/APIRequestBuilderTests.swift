@@ -113,7 +113,7 @@ class APIRequestBuilderTests: XCTestCase {
     }
     
     private func buildRequest<T>(for endpoint: Endpoint<T>, additionalParams: [String: Any] = [:]) throws -> URLRequest {
-        return try builder.request(for: endpoint, additionalParams: additionalParams)
+        return try builder.request(for: endpoint, extraParams: additionalParams)
     }
 }
 
