@@ -41,20 +41,17 @@ public struct DiscoverParser: ResponseParser {
     }
 }
 
-public struct ReleasedMoviesPolicy {
-    public let theaterInterval: Interval
-    public let comingSoonInterval: Interval
+public struct ReleaseMoviesRange {
+    public let from: Date
+    public let to: Date
     
-    public init(date: Date) {
-        theaterInterval = Interval(from: Calendar.current.date(byAdding: .month, value: -1, to: date) ?? date, to: date)
-        comingSoonInterval = Interval(
-            from: Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date,
-            to: Calendar.current.date(byAdding: .month, value: 1, to: date) ?? date
-        )
+    public init(moviesInTheatersForDate date: Date) {
+        from = Calendar.current.date(byAdding: .month, value: -1, to: date) ?? date
+        to = date
     }
     
-    public struct Interval {
-        let from: Date
-        let to: Date
+    public init(comingSoonMoviesForDate date: Date) {
+        from = Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
+        to = Calendar.current.date(byAdding: .month, value: 1, to: date) ?? date
     }
 }
