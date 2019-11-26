@@ -21,6 +21,7 @@ public struct MoviesDiscoverer {
         let policy = ReleasedMoviesPolicy(date: date)
         let theaterInterval = policy.theaterInterval
         var theaterResult: Result<[Movie], Error>!
+        
         dispatchGroup.enter()
         client.request(endpoint: TMDBApi.Discover.releasedMovies(from: theaterInterval.from, to: theaterInterval.to)) { result in
             theaterResult = result
