@@ -8,8 +8,8 @@
 
 import Foundation
 
-public extension Endpoint where Parser == ImageConfigParser {
-    static func imageConfig() -> Endpoint {
+public extension TMDBApi {
+    static func imageConfig() -> Endpoint<ImageConfigParser> {
         return Endpoint(path: "configuration", method: .get, params: [:], parser: ImageConfigParser())
     }
 }

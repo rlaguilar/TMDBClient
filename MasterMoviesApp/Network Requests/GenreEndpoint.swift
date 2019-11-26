@@ -8,8 +8,8 @@
 
 import Foundation
 
-public extension Endpoint where Parser == MovieGenresParser {
-    static func movieGenres() -> Endpoint {
+public extension TMDBApi {
+    static func movieGenres() -> Endpoint<MovieGenresParser> {
         return Endpoint(path: "genre/movie/list", method: .get, params: [:], parser: MovieGenresParser())
     }
 }

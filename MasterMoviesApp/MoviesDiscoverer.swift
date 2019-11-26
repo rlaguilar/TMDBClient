@@ -20,7 +20,7 @@ public struct MoviesDiscoverer {
         
         var theaterResult: Result<[Movie], Error>!
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.Discover.theaterMovies(at: date)) { result in
+        client.request(endpoint: TMDBApi.Discover.theaterMovies(at: date)) { result in
             theaterResult = result
             dispatchGroup.leave()
         }
@@ -28,7 +28,7 @@ public struct MoviesDiscoverer {
         var comingSoonResult: Result<[Movie], Error>!
         
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.Discover.comingSoonMovies(at: date)) { result in
+        client.request(endpoint: TMDBApi.Discover.comingSoonMovies(at: date)) { result in
             comingSoonResult = result
             dispatchGroup.leave()
         }
@@ -36,7 +36,7 @@ public struct MoviesDiscoverer {
         var popularResult: Result<[Movie], Error>!
         
         dispatchGroup.enter()
-        client.request(endpoint: Endpoint.Discover.popularMovies()) { result in
+        client.request(endpoint: TMDBApi.Discover.popularMovies()) { result in
             popularResult = result
             dispatchGroup.leave()
         }

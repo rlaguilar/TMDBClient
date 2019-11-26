@@ -15,7 +15,7 @@ class GenreRequestTests: XCTestCase {
         return try! Data(contentsOf: url)
     }()
     
-    private let endpoint = Endpoint.movieGenres()
+    private let endpoint = TMDBApi.movieGenres()
     
     func testEndpoint_HasCorrectPath() {
         XCTAssertEqual(endpoint.path, "genre/movie/list")

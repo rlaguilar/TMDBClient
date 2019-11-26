@@ -17,7 +17,7 @@ class ImageConfigRequestTests: XCTestCase {
         return try! Data(contentsOf: url)
     }()
     
-    private let endpoint = Endpoint.imageConfig()
+    private let endpoint = TMDBApi.imageConfig()
     
     func testEndpoint_HasCorrectPath() {
         XCTAssertEqual(endpoint.path, "configuration")
