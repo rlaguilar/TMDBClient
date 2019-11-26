@@ -16,18 +16,7 @@ public extension TMDBApi {
             return Endpoint(path: "discover/movie", method: .get, params: ["sort_by": "popularity.desc"], parser: DiscoverParser())
         }
         
-        static func theaterMovies(at date: Date) -> Endpoint<DiscoverParser> {
-            let oneMonthBefore = Calendar.current.date(byAdding: .month, value: -1, to: date) ?? date
-            return releasedMovies(from: oneMonthBefore, to: date)
-        }
-        
-        static func comingSoonMovies(at date: Date) -> Endpoint<DiscoverParser> {
-            let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date
-            let oneMonthLater = Calendar.current.date(byAdding: .month, value: 1, to: date) ?? date
-            return releasedMovies(from: nextDay, to: oneMonthLater)
-        }
-        
-        static private func releasedMovies(from: Date, to: Date) -> Endpoint<DiscoverParser> {
+        static func releasedMovies(from: Date, to: Date) -> Endpoint<DiscoverParser> {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
             
@@ -49,5 +38,23 @@ public struct DiscoverParser: ResponseParser {
     
     public func parse(data: Data) throws -> [Movie] {
         return try pageReponseParser.parse(data: data).results
+    }
+}
+
+public struct ReleasedMoviesPolicy {
+    public let theaterInterval: Interval
+    public let comingSoonInterval: Interval
+    
+    public init(date: Date) {
+        theaterInterval = Interval(from: Calendar.current.date(byAdding: .month, value: -1, to: date) ?? date, to: date)
+        comingSoonInterval = Interval(
+            from: Calendar.current.date(byAdding: .day, value: 1, to: date) ?? date,
+            to: Calendar.current.date(byAdding: .month, value: 1, to: date) ?? date
+        )
+    }
+    
+    public struct Interval {
+        let from: Date
+        let to: Date
     }
 }
