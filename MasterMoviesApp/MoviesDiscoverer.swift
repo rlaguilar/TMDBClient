@@ -18,17 +18,18 @@ public struct MoviesDiscoverer {
     func discoverMovies(forDate date: Date, completion: @escaping (Result<[FeaturedContent], Error>) -> Void) {
         let dispatchGroup = DispatchGroup()
         
+        let theaterRange = ReleaseMoviesRange(moviesInTheatersForDate: date)
         var theaterResult: Result<[Movie], Error>!
         dispatchGroup.enter()
-        client.request(endpoint: TMDBApi.Discover.theaterMovies(at: date)) { result in
+        client.request(endpoint: TMDBApi.Discover.releasedMovies(from: theaterRange.from, to: theaterRange.to)) { result in
             theaterResult = result
             dispatchGroup.leave()
         }
         
         var comingSoonResult: Result<[Movie], Error>!
-        
+        let comingSoonRange = ReleaseMoviesRange(comingSoonMoviesForDate: date)
         dispatchGroup.enter()
-        client.request(endpoint: TMDBApi.Discover.comingSoonMovies(at: date)) { result in
+        client.request(endpoint: TMDBApi.Discover.releasedMovies(from: comingSoonRange.from, to: comingSoonRange.to)) { result in
             comingSoonResult = result
             dispatchGroup.leave()
         }

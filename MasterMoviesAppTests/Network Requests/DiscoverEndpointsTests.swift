@@ -17,12 +17,6 @@ class DiscoverEndpointsTests: XCTestCase {
         return try! Data(contentsOf: url)
     }()
     
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
-    
     // MARK:- Popular Movies Endpoint
     func testPopularMovies_HasCorrectPath() {
         let endpoint = popularEndpoint()
@@ -48,59 +42,30 @@ class DiscoverEndpointsTests: XCTestCase {
         _ = try endpoint.parser.parse(data: discoverResponseData)
     }
     
-    // MARK:- Theater Movies Endpoint
-    func testTheaterMovies_HasCorrectPath() {
-        let endpoint = theaterEndpoint(at: Date())
+    // MARK:- Released Movies Endpoint
+    func testReleasedMoviesInRange_HasCorrectPath() {
+        let endpoint = releasedMoviesEndpoint(from: Date(), to: Date())
         
         XCTAssertEqual(endpoint.path, "discover/movie")
     }
     
-    func testTheaterMovies_HasCorrectMethod() {
-        let endpoint = theaterEndpoint(at: Date())
+    func testReleasedMoviesInRange_HasCorrectMethod() {
+        let endpoint = releasedMoviesEndpoint(from: Date(), to: Date())
         
         XCTAssertEqual(endpoint.method.text, HTTPMethod.get.text)
     }
     
-    func testTheaterMovies_ContainsCorrectParams() {
+    func testReleasedMoviesInRange_ContainsCorrectParams() {
         let date = Date(timeIntervalSince1970: 0)
-        let oneMonthBefore = Calendar.current.date(byAdding: .month, value: -1, to: date)!
-        let endpoint = theaterEndpoint(at: date)
+        let oneDayAfter = Calendar.current.date(byAdding: .day, value: 1, to: date)!
+        let endpoint = releasedMoviesEndpoint(from: date, to: oneDayAfter)
         
-        XCTAssertEqual(endpoint.params["primary_release_date.gte"] as? String, dateFormatter.string(from: oneMonthBefore))
-        XCTAssertEqual(endpoint.params["primary_release_date.lte"] as? String, dateFormatter.string(from: date))
+        XCTAssertEqual(endpoint.params["primary_release_date.gte"] as? String, "1970-01-01")
+        XCTAssertEqual(endpoint.params["primary_release_date.lte"] as? String, "1970-01-02")
     }
     
-    func testTheaterMovies_HasValidParser() throws {
-        let endpoint = comingSoonEndpoint(at: Date())
-        
-        _ = try endpoint.parser.parse(data: discoverResponseData)
-    }
-    
-    // MARK:- Coming Soon Movies Endpoint
-    func testComingSoonMovies_HasCorrectPath() {
-        let endpoint = comingSoonEndpoint(at: Date())
-        
-        XCTAssertEqual(endpoint.path, "discover/movie")
-    }
-    
-    func testComingSoonMovies_HasCorrectMethod() {
-        let endpoint = comingSoonEndpoint(at: Date())
-        
-        XCTAssertEqual(endpoint.method.text, HTTPMethod.get.text)
-    }
-    
-    func testComingSoonMovies_ContainsCorrectParams() {
-        let date = Date(timeIntervalSince1970: 0)
-        let oneDayLater = Calendar.current.date(byAdding: .day, value: 1, to: date)!
-        let oneMonthAfter = Calendar.current.date(byAdding: .month, value: 1, to: date)!
-        let endpoint = comingSoonEndpoint(at: date)
-        
-        XCTAssertEqual(endpoint.params["primary_release_date.gte"] as? String, dateFormatter.string(from: oneDayLater))
-        XCTAssertEqual(endpoint.params["primary_release_date.lte"] as? String, dateFormatter.string(from: oneMonthAfter))
-    }
-    
-    func testComingSoonMovies_HasValidParser() throws {
-        let endpoint = comingSoonEndpoint(at: Date())
+    func testReleasedMoviesInRange_HasValidParser() throws {
+        let endpoint = releasedMoviesEndpoint(from: Date(), to: Date())
         
         _ = try endpoint.parser.parse(data: discoverResponseData)
     }
@@ -110,11 +75,7 @@ class DiscoverEndpointsTests: XCTestCase {
         return TMDBApi.Discover.popularMovies()
     }
     
-    private func theaterEndpoint(at date: Date) -> Endpoint<DiscoverParser> {
-        return TMDBApi.Discover.theaterMovies(at: date)
-    }
-    
-    private func comingSoonEndpoint(at date: Date) -> Endpoint<DiscoverParser> {
-        return TMDBApi.Discover.comingSoonMovies(at: date)
+    private func releasedMoviesEndpoint(from: Date, to: Date) -> Endpoint<DiscoverParser> {
+        return TMDBApi.Discover.releasedMovies(from: from, to: to)
     }
 }
