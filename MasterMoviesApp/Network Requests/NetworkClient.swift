@@ -15,7 +15,9 @@ public protocol EndpointModifier {
 public protocol NetoworkClientObserver {
     func willSend(request: URLRequest)
     
-    func didReceiveResponse(for request: URLRequest)
+    func didFinishLoadingContent(for request: URLRequest, data: Data, response: HTTPURLResponse)
+    
+    func didFailLoadingContent(for request: URLRequest, withError error: Error)
 }
 
 public class NetworkClient {
@@ -35,54 +37,71 @@ public class NetworkClient {
         modifier = MergedEndpointModifier(modifiers: modifiers)
     }
     
-    func request<Parser>(endpoint: Endpoint<Parser>, completion: @escaping (Result<Parser.Response, Error>) -> Void) {
-        func parseError(fromData data: Data?, response: URLResponse?, error: Error?) -> Error? {
-            if let error = error {
-                return error
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                return NetworkError.badResponse
-            }
-            
-            guard (200 ..< 300).contains(httpResponse.statusCode) else {
-                let message = data.map { String(data: $0, encoding: .utf8) } ?? nil
-                return NetworkError.apiError(statusCode: httpResponse.statusCode, message: message)
+    public func request<Parser>(endpoint: Endpoint<Parser>, completion: @escaping (Result<Parser.Response, Error>) -> Void) {
+        func parseError(fromData data: Data, response: HTTPURLResponse) -> Error? {
+            guard (200 ..< 300).contains(response.statusCode) else {
+                let message = String(data: data, encoding: .utf8)
+                return NetworkError.apiError(statusCode: response.statusCode, message: message)
             }
             
             return nil
         }
         
-        func parse(data: Data?, response: URLResponse?, error: Error?, parser: Parser) throws -> Parser.Response {
-            if let error = parseError(fromData: data, response: response, error: error) {
-                throw error
-            }
-            
-            guard let data = data else {
-                throw NetworkError.badResponse
-            }
-            
-            return try parser.parse(data: data)
+        func finish(request: URLRequest, withError error: Error) {
+            observer.didFailLoadingContent(for: request, withError: error)
+            completion(.failure(error))
+        }
+        
+        func finish(request: URLRequest, withValue value: Parser.Response, response: HTTPURLResponse, data: Data) {
+            observer.didFinishLoadingContent(for: request, data: data, response: response)
+            completion(.success(value))
         }
         
         do {
             let request = try requestBuilder.request(for: modifier.modify(endpoint: endpoint))
             observer.willSend(request: request)
             
-            session.dataTask(with: request) { [observer] (data, response, error) in
-                observer.didReceiveResponse(for: request)
+            session.dataTask(with: request) { (data, response, error) in
+                let networkResponse = NetworkResponse(data: data, response: response, error: error)
                 
-                do {
-                    let value = try parse(data: data, response: response, error: error, parser: endpoint.parser)
-                    completion(.success(value))
-                }
-                catch {
-                    completion(.failure(error))
+                switch networkResponse {
+                case .error(let error):
+                    finish(request: request, withError: error)
+                case .content(let data, let response):
+                    if let error = parseError(fromData: data, response: response) {
+                        finish(request: request, withError: error)
+                    }
+                    else {
+                        do {
+                            let value = try endpoint.parser.parse(data: data)
+                            finish(request: request, withValue: value, response: response, data: data)
+                        }
+                        catch {
+                            finish(request: request, withError: error)
+                        }
+                    }
                 }
             }.resume()
         }
         catch {
             completion(.failure(error))
+        }
+    }
+    
+    private enum NetworkResponse {
+        case error(Error)
+        case content(Data, HTTPURLResponse)
+        
+        init(data: Data?, response: URLResponse?, error: Error?) {
+            if let error = error {
+                self = .error(error)
+            }
+            else if let data = data, let response = response as? HTTPURLResponse {
+                self = .content(data, response)
+            }
+            else {
+                self = .error(NetworkError.badResponse)
+            }
         }
     }
 }
@@ -95,12 +114,20 @@ private class MergedNetworkClientObserver: NetoworkClientObserver {
     }
     
     public func willSend(request: URLRequest) {
-        observers.forEach { $0.willSend(request: request) }
+        for observer in observers {
+            observer.willSend(request: request)
+        }
     }
     
-    public func didReceiveResponse(for request: URLRequest) {
+    func didFinishLoadingContent(for request: URLRequest, data: Data, response: HTTPURLResponse) {
         for observer in observers {
-            observer.didReceiveResponse(for: request)
+            observer.didFinishLoadingContent(for: request, data: data, response: response)
+        }
+    }
+    
+    func didFailLoadingContent(for request: URLRequest, withError error: Error) {
+        for observer in observers {
+            observer.didFailLoadingContent(for: request, withError: error)
         }
     }
 }

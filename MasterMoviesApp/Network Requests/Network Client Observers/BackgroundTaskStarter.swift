@@ -1,8 +1,8 @@
 //
-//  RequestHelpers.swift
+//  BackgroundTaskStarter.swift
 //  MasterMoviesApp
 //
-//  Created by Reynaldo Aguilar on 29/10/19.
+//  Created by Reynaldo Aguilar on 29/11/19.
 //  Copyright © 2019 Reynaldo Aguilar. All rights reserved.
 //
 
@@ -22,7 +22,7 @@ public class BackgroundTaskStarter: NetoworkClientObserver {
     
     public func willSend(request: URLRequest) {
         let identifier = backgroundTaskHandler.beginBackgroundTask {
-            self.finishtTask(for: request)
+            self.finishTask(for: request)
         }
         
         syncQueue.async {
@@ -30,35 +30,21 @@ public class BackgroundTaskStarter: NetoworkClientObserver {
         }
     }
     
-    public func didReceiveResponse(for request: URLRequest) {
-        finishtTask(for: request)
+    public func didFinishLoadingContent(for request: URLRequest, data: Data, response: HTTPURLResponse) {
+        finishTask(for: request)
     }
     
-    private func finishtTask(for request: URLRequest) {
+    public func didFailLoadingContent(for request: URLRequest, withError error: Error) {
+        finishTask(for: request)
+    }
+    
+    private func finishTask(for request: URLRequest) {
         syncQueue.async {
             if let identifier = self.taskIdentifiers[request] {
                 self.backgroundTaskHandler.endBackgroundTask(identifier)
                 self.taskIdentifiers[request] = nil
             }
         }
-    }
-}
-
-public class RequestProfiler: NetoworkClientObserver {
-    private var startTimes: [URLRequest: Date] = [:]
-    
-    public func willSend(request: URLRequest) {
-        startTimes[request] = Date()
-    }
-    
-    public func didReceiveResponse(for request: URLRequest) {
-        guard let start = startTimes[request] else {
-            return
-        }
-
-        startTimes[request] = nil
-        let time = Date().timeIntervalSince(start)
-        print("It took \(time) seconds to perform request to \(request)")
     }
 }
 
