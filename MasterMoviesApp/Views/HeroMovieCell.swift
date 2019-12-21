@@ -143,7 +143,7 @@ class HeroMovieCell: UICollectionViewCell {
                 string: genre,
                 style: visual.textStyleTheme.small,
                 foregroundColor: visual.colorTheme.secondaryTextColor
-                )
+            )
             
             backgroundColor = .clear
             layer.borderWidth = 0.5
