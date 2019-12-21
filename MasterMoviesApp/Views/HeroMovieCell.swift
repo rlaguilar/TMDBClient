@@ -79,12 +79,12 @@ class HeroMovieCell: UICollectionViewCell {
         let visual = dependencies.visual
         titleLabel.attributedText = NSAttributedString(
             string: movie.title,
-            style: visual.fontTheme.largeTitle,
+            style: visual.textStyleTheme.largeTitle,
             foregroundColor: visual.colorTheme.secondaryTextColor
         )
         reviewCounterView.count = ReviewCount(total: movie.voteCount, average: movie.voteAverage)
         reviewCounterView.style = ReviewCounterView.Style(
-            textStyle: visual.fontTheme.body,
+            textStyle: visual.textStyleTheme.body,
             titleColor: visual.colorTheme.secondaryTextColor,
             onColor: visual.colorTheme.accentColor,
             offColor: visual.colorTheme.offColor,
@@ -141,7 +141,7 @@ class HeroMovieCell: UICollectionViewCell {
             
             label.attributedText = NSAttributedString(
                 string: genre,
-                style: visual.fontTheme.small,
+                style: visual.textStyleTheme.small,
                 foregroundColor: visual.colorTheme.secondaryTextColor
                 )
             

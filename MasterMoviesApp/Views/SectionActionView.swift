@@ -20,7 +20,7 @@ class SectionActionView: UICollectionReusableView {
         button.setAttributedTitle(
             NSAttributedString(
                 string: "SEE ALL",
-                style: visual.fontTheme.small,
+                style: visual.textStyleTheme.small,
                 foregroundColor: visual.colorTheme.secondaryTextColor
             ),
             for: .normal

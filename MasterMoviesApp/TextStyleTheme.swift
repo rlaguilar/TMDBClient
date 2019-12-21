@@ -1,5 +1,5 @@
 //
-//  FontTheme.swift
+//  TextStyleTheme.swift
 //  MasterMoviesApp
 //
 //  Created by Reynaldo Aguilar on 27/10/19.
@@ -16,7 +16,7 @@ public struct TextStyle {
     public static let `default` = TextStyle(font: UIFont.systemFont(ofSize: 12), kern: 1, lineSpacing: 0)
 }
 
-public struct FontTheme {
+public struct TextStyleTheme {
     public let largeTitle: TextStyle = TextStyle(font: UIFont.systemFont(ofSize: 30), kern: 1.2, lineSpacing: 28)
     public let title: TextStyle = TextStyle(font: UIFont.systemFont(ofSize: 20), kern: 1.2, lineSpacing: 28)
     public let subtitle: TextStyle = TextStyle(font: UIFont.systemFont(ofSize: 16), kern: 1.2, lineSpacing: 28)

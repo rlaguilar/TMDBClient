@@ -19,7 +19,7 @@ class SectionTitleView: UICollectionReusableView {
     func update(title: String, visual: VisualDependencies) {
         label.attributedText = NSAttributedString(
             string: title,
-            style: visual.fontTheme.title,
+            style: visual.textStyleTheme.title,
             foregroundColor: visual.colorTheme.secondaryTextColor
         )
     }

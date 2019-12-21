@@ -49,12 +49,12 @@ public class MovieCell: UICollectionViewCell {
         let visual = dependencies.visual
         titleLabel.attributedText = NSAttributedString(
             string: movie.title,
-            style: visual.fontTheme.subtitle,
+            style: visual.textStyleTheme.subtitle,
             foregroundColor: visual.colorTheme.primaryTextColor
         )
         
         reviewCounterView.style = ReviewCounterView.Style(
-            textStyle: visual.fontTheme.small,
+            textStyle: visual.textStyleTheme.small,
             titleColor: visual.colorTheme.secondaryTextColor,
             onColor: visual.colorTheme.accentColor,
             offColor: visual.colorTheme.offColor,

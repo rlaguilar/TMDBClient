@@ -15,7 +15,7 @@ public struct Dependencies {
 
 public struct VisualDependencies {
     public let colorTheme: ColorTheme
-    public let fontTheme: FontTheme
+    public let textStyleTheme: TextStyleTheme
 }
 
 public struct DataDependencies {
