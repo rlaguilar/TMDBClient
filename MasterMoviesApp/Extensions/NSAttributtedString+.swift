@@ -9,17 +9,17 @@
 import UIKit
 
 public extension NSAttributedString {
-    convenience init(string: String, style: TextStyle, foregroundColor: UIColor) {
+    convenience init(string: String, style: TextStyle, foregroundColor color: UIColor) {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = style.lineSpacing
+        paragraphStyle.lineHeightMultiple = style.lineSpacing
         
-        self.init(
-            string: string,
-            attributes: [
-                .foregroundColor: foregroundColor,
-                .font: style.font,
-                .kern: style.kern
-            ]
-        )
+        let attrs: [NSAttributedString.Key : Any] = [
+            .foregroundColor: color,
+            .font: style.font,
+            .kern: style.kern,
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        self.init(string: string, attributes: attrs)
     }
 }
