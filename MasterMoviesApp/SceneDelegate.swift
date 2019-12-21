@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let visual = VisualDependencies(
             colorTheme: ColorTheme(),
-            fontTheme: FontTheme(colorTheme: ColorTheme())
+            fontTheme: FontTheme()
         )
         
         let window = UIWindow(windowScene: windowScene)

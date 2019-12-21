@@ -85,7 +85,7 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource {
                 for: indexPath
                 ) as! SectionTitleView
             
-            sectionTitleView.update(title: title, fontTheme: dependencies.visual.fontTheme)
+            sectionTitleView.update(title: title, visual: dependencies.visual)
             return sectionTitleView
         }
         else {
@@ -95,7 +95,7 @@ public class MoviesDataSource: NSObject, UICollectionViewDataSource {
                 for: indexPath
                 ) as! SectionActionView
             
-            sectionActionView.update(fontTheme: dependencies.visual.fontTheme)
+            sectionActionView.update(visual: dependencies.visual)
             return sectionActionView
         }
     }
