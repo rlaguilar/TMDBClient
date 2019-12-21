@@ -38,47 +38,29 @@ public class NetworkClient {
     }
     
     public func request<Parser>(endpoint: Endpoint<Parser>, completion: @escaping (Result<Parser.Response, Error>) -> Void) {
-        func parseError(fromData data: Data, response: HTTPURLResponse) -> Error? {
-            guard (200 ..< 300).contains(response.statusCode) else {
-                let message = String(data: data, encoding: .utf8)
-                return NetworkError.apiError(statusCode: response.statusCode, message: message)
-            }
-            
-            return nil
-        }
-        
         func finish(request: URLRequest, withError error: Error) {
             observer.didFailLoadingContent(for: request, withError: error)
             completion(.failure(error))
-        }
-        
-        func finish(request: URLRequest, withValue value: Parser.Response, response: HTTPURLResponse, data: Data) {
-            observer.didFinishLoadingContent(for: request, data: data, response: response)
-            completion(.success(value))
         }
         
         do {
             let request = try requestBuilder.request(for: modifier.modify(endpoint: endpoint))
             observer.willSend(request: request)
             
-            session.dataTask(with: request) { (data, response, error) in
+            session.dataTask(with: request) { [observer] (data, response, error) in
                 let networkResponse = NetworkResponse(data: data, response: response, error: error)
                 
                 switch networkResponse {
                 case .error(let error):
                     finish(request: request, withError: error)
                 case .content(let data, let response):
-                    if let error = parseError(fromData: data, response: response) {
-                        finish(request: request, withError: error)
+                    do {
+                        let value = try endpoint.parser.parse(data: data)
+                        observer.didFinishLoadingContent(for: request, data: data, response: response)
+                        completion(.success(value))
                     }
-                    else {
-                        do {
-                            let value = try endpoint.parser.parse(data: data)
-                            finish(request: request, withValue: value, response: response, data: data)
-                        }
-                        catch {
-                            finish(request: request, withError: error)
-                        }
+                    catch {
+                        finish(request: request, withError: error)
                     }
                 }
             }.resume()
@@ -97,6 +79,12 @@ public class NetworkClient {
                 self = .error(error)
             }
             else if let data = data, let response = response as? HTTPURLResponse {
+                guard (200 ..< 300).contains(response.statusCode) else {
+                    let message = String(data: data, encoding: .utf8)
+                    self = .error(NetworkError.apiError(statusCode: response.statusCode, message: message))
+                    return
+                }
+                
                 self = .content(data, response)
             }
             else {
