@@ -45,6 +45,7 @@ public class ReviewCounterView: UIView {
     public var style = Style(textStyle: .default, titleColor: .white, onColor: .green, offColor: .brown, size: .small) {
         didSet {
             updateLabelText()
+            resizeStarViews()
             updateStarsColor()
         }
     }
