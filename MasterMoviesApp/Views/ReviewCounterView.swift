@@ -42,38 +42,18 @@ public class ReviewCounterView: UIView {
     
     private let label = UILabel()
     
-    public var onColor: UIColor = .green {
-        didSet {
-            updateStarsColor()
-        }
-    }
-    
-    public var offColor: UIColor = .lightGray {
-        didSet {
-            updateStarsColor()
-        }
-    }
-    
-    public var style: Style = .small {
+    public var style = Style(textStyle: .default, titleColor: .white, onColor: .green, offColor: .brown, size: .small) {
         didSet {
             updateLabelText()
             resizeStarViews()
+            updateStarsColor()
         }
     }
     
     public var count: ReviewCount = .zero {
         didSet {
             updateLabelText()
-            let stars = count.starsCount
-            
-            for (index, view) in starsContainer.arrangedSubviews.enumerated() {
-                if index < stars {
-                    view.tintColor = onColor
-                }
-                else {
-                    view.tintColor = offColor
-                }
-            }
+            updateStarsColor()
         }
     }
     
@@ -84,7 +64,7 @@ public class ReviewCounterView: UIView {
             let imageView = UIImageView(image: #imageLiteral(resourceName: "star"))
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.tintAdjustmentMode = .normal
-            imageView.tintColor = offColor
+            imageView.tintColor = style.offColor
             NSLayoutConstraint.activate([
                 imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1)
             ])
@@ -112,22 +92,27 @@ public class ReviewCounterView: UIView {
             label.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
+        updateStarsColor()
         resizeStarViews()
     }
     
     private func updateStarsColor() {
         for (index, star) in starsContainer.arrangedSubviews.enumerated() {
             if index < count.starsCount {
-                star.tintColor = onColor
+                star.tintColor = style.onColor
             }
             else {
-                star.tintColor = offColor
+                star.tintColor = style.offColor
             }
         }
     }
     
     private func updateLabelText() {
-        label.attributedText = style.formattedReviewText(string: count.text, fontTheme: FontTheme(colorTheme: ColorTheme()))
+        label.attributedText = NSAttributedString(
+            string: count.text,
+            style: style.textStyle,
+            foregroundColor: style.titleColor
+        )
     }
     
     private var starWidthConstraint: NSLayoutConstraint?
@@ -145,21 +130,20 @@ public class ReviewCounterView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public enum Style {
-        case small
-        case large
+    public struct Style {
+        public let textStyle: TextStyle
+        public let titleColor: UIColor
+        public let onColor: UIColor
+        public let offColor: UIColor
+        public let size: Size
         
-        fileprivate func formattedReviewText(string: String, fontTheme: FontTheme) -> NSAttributedString {
-            switch self {
-            case .small:
-                return fontTheme.small(string: string)
-            case .large:
-                return fontTheme.body(string: string)
-            }
+        public enum Size {
+            case small
+            case large
         }
         
         fileprivate var starWidth: CGFloat {
-            switch self {
+            switch size {
             case .small:
                 return 9
             case .large:

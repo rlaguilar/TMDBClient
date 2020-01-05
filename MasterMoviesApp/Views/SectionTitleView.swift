@@ -16,8 +16,12 @@ class SectionTitleView: UICollectionReusableView {
         addSubview(label)
     }
     
-    func update(title: String, fontTheme: FontTheme) {
-        label.attributedText = fontTheme.title(string: title)
+    func update(title: String, visual: VisualDependencies) {
+        label.attributedText = NSAttributedString(
+            string: title,
+            style: visual.textStyleTheme.title,
+            foregroundColor: visual.colorTheme.secondaryTextColor
+        )
     }
     
     override func layoutSubviews() {

@@ -35,7 +35,6 @@ class HeroMovieCell: UICollectionViewCell {
         titleLabel.numberOfLines = 0
         
         contentView.addSubview(reviewCounterView)
-        reviewCounterView.style = .large
         
         contentView.addSubview(genresContainer)
         genresContainer.axis = .horizontal
@@ -77,11 +76,20 @@ class HeroMovieCell: UICollectionViewCell {
         let gradientColor = dependencies.visual.colorTheme.backgroundColor
         gradientView.colors = [gradientColor.withAlphaComponent(0), gradientColor]
         
-        let fontTheme = dependencies.visual.fontTheme
-        titleLabel.attributedText = fontTheme.largeTitle(string: movie.title)
+        let visual = dependencies.visual
+        titleLabel.attributedText = NSAttributedString(
+            string: movie.title,
+            style: visual.textStyleTheme.largeTitle,
+            foregroundColor: visual.colorTheme.secondaryTextColor
+        )
         reviewCounterView.count = ReviewCount(total: movie.voteCount, average: movie.voteAverage)
-        reviewCounterView.onColor = dependencies.visual.colorTheme.accentColor
-        reviewCounterView.offColor = dependencies.visual.colorTheme.offColor
+        reviewCounterView.style = ReviewCounterView.Style(
+            textStyle: visual.textStyleTheme.body,
+            titleColor: visual.colorTheme.secondaryTextColor,
+            onColor: visual.colorTheme.accentColor,
+            offColor: visual.colorTheme.offColor,
+            size: .large
+        )
         
         let arrangedSubviews = genresContainer.arrangedSubviews
         
@@ -131,7 +139,11 @@ class HeroMovieCell: UICollectionViewCell {
         init(genre: String, visual: VisualDependencies) {
             super.init(frame: .zero)
             
-            label.attributedText = visual.fontTheme.small(string: genre)
+            label.attributedText = NSAttributedString(
+                string: genre,
+                style: visual.textStyleTheme.small,
+                foregroundColor: visual.colorTheme.secondaryTextColor
+            )
             
             backgroundColor = .clear
             layer.borderWidth = 0.5

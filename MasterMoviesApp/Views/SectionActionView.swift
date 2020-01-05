@@ -16,8 +16,15 @@ class SectionActionView: UICollectionReusableView {
         addSubview(button)
     }
     
-    func update(fontTheme: FontTheme) {
-        button.setAttributedTitle(fontTheme.small(string: "SEE ALL"), for: .normal)
+    func update(visual: VisualDependencies) {
+        button.setAttributedTitle(
+            NSAttributedString(
+                string: "SEE ALL",
+                style: visual.textStyleTheme.small,
+                foregroundColor: visual.colorTheme.secondaryTextColor
+            ),
+            for: .normal
+        )
     }
     
     override func layoutSubviews() {

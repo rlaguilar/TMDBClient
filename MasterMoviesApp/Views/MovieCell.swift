@@ -47,9 +47,20 @@ public class MovieCell: UICollectionViewCell {
     
     public func update(movie: Movie, dependencies: Dependencies) {
         let visual = dependencies.visual
-        titleLabel.attributedText = visual.fontTheme.subtitle(string: movie.title)
-        reviewCounterView.onColor = visual.colorTheme.accentColor
-        reviewCounterView.offColor = visual.colorTheme.offColor
+        titleLabel.attributedText = NSAttributedString(
+            string: movie.title,
+            style: visual.textStyleTheme.subtitle,
+            foregroundColor: visual.colorTheme.primaryTextColor
+        )
+        
+        reviewCounterView.style = ReviewCounterView.Style(
+            textStyle: visual.textStyleTheme.small,
+            titleColor: visual.colorTheme.secondaryTextColor,
+            onColor: visual.colorTheme.accentColor,
+            offColor: visual.colorTheme.offColor,
+            size: .small
+        )
+        
         reviewCounterView.count = ReviewCount(total: movie.voteCount, average: movie.voteAverage)
 
         if let poster = movie.posterPath {
