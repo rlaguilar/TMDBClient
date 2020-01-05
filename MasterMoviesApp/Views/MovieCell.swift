@@ -63,15 +63,17 @@ public class MovieCell: UICollectionViewCell {
         
         reviewCounterView.count = ReviewCount(total: movie.voteCount, average: movie.voteAverage)
 
+        let placeholder = #imageLiteral(resourceName: "placeholder-cell")
+        
         if let poster = movie.posterPath {
-            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forPosterPath: poster))
+            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forPosterPath: poster), placeholder: placeholder)
         }
         else if let backdrop = movie.backdropPath {
-            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forBackdropPath: backdrop))
+            imageView.kf.setImage(with: dependencies.data.imageURLBuilder.url(forBackdropPath: backdrop), placeholder: placeholder)
         }
         
         else {
-            imageView.kf.setImage(with: Optional<Resource>.none)
+            imageView.kf.setImage(with: Optional<Resource>.none, placeholder: placeholder)
         }
         
         setNeedsLayout()
